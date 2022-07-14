@@ -1,0 +1,6 @@
+# configuration file for dotnet-releaser
+[msbuild]
+project = "RangeExtensions.sln"
+[github]
+user = "neon-sunset"
+repo = "RangeExtensions"
