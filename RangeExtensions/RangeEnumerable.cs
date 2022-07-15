@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 
 namespace RangeExtensions;
 
@@ -8,18 +7,45 @@ public readonly struct RangeEnumerable : IEnumerable<int>
 {
     private readonly Range _range;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public RangeEnumerable(Range range)
     {
+        if (range.Start.IsFromEnd || range.End.IsFromEnd)
+        {
+            InvalidRange(range);
+        }
+
         _range = range;
     }
 
+    public int Length
+    {
+        get
+        {
+            var start = _range.Start.Value;
+            var end = _range.End.Value;
+
+            return start < end
+                ? end - start
+                : start - end;
+        }
+    }
+
+    public RangeEnumerator GetEnumerator() => _range.GetEnumerator();
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IEnumerator<int> GetEnumerator() => _range.GetEnumerator();
+    IEnumerator<int> IEnumerable<int>.GetEnumerator() => _range.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => _range.GetEnumerator();
 
     public static implicit operator RangeEnumerable(Range range) => new(range);
 
     public static implicit operator Range(RangeEnumerable enumerable) => enumerable._range;
+
+    [DoesNotReturn]
+    private static void InvalidRange(Range range)
+    {
+        throw new ArgumentOutOfRangeException(nameof(range), range, "Cannot enumerate numbers in range with a head or tail indexed from end.");
+    }
 }
 
 public struct RangeEnumerator : IEnumerator<int>
