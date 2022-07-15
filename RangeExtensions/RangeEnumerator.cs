@@ -24,6 +24,7 @@ public readonly struct RangeEnumerable : IEnumerable<int>
 
 public struct RangeEnumerator : IEnumerator<int>
 {
+    private readonly int _shift;
     private readonly int _end;
     private int _current;
 
@@ -40,20 +41,22 @@ public struct RangeEnumerator : IEnumerator<int>
 
         if (start < end)
         {
+            _shift = 1;
             _current = start - 1;
             _end = end;
         }
         else
         {
-            _current = end;
-            _end = start - 1;
+            _shift = -1;
+            _current = start;
+            _end = end - 1;
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool MoveNext()
     {
-        return ++_current < _end;
+        return (_current += _shift) != _end;
     }
 
     public int Current => _current;
