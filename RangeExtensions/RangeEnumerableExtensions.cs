@@ -25,13 +25,10 @@ public static class RangeEnumerableExtensions
         var array = new int[length];
         var enumerator = enumerable.GetEnumerator();
 
-        enumerator.MoveNext();
-        var value = enumerator.Current;
-
         for (var i = 0; i < array.Length; i++)
         {
-            array[i] = value;
-            value++;
+            enumerator.MoveNext();
+            array[i] = enumerator.Current;
         }
 
         return array;

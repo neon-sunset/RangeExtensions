@@ -7,4 +7,10 @@ public static class RangeExtensions
     {
         return new RangeEnumerator(range);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int[] ToArray(this Range range)
+    {
+        return range.AsEnumerable().ToArray();
+    }
 }

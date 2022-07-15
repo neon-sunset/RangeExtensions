@@ -13,7 +13,7 @@ public class CollectToArray
     [Benchmark(Baseline = true)]
     public int[] RangeToArray()
     {
-        return (0..Length).AsEnumerable().ToArray();
+        return (0..Length).ToArray();
     }
 
     [Benchmark]
