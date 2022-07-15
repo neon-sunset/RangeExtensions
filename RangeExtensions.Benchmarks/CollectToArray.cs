@@ -17,8 +17,20 @@ public class CollectToArray
     }
 
     [Benchmark]
+    public List<int> RangeToList()
+    {
+        return (0..Length).AsEnumerable().ToList();
+    }
+
+    [Benchmark]
     public int[] EnumerableToArray()
     {
         return Enumerable.Range(0, Length).ToArray();
+    }
+
+    [Benchmark]
+    public List<int> EnumerableToList()
+    {
+        return Enumerable.Range(0, Length).ToList();
     }
 }

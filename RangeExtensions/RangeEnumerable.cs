@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace RangeExtensions;
 
-public readonly struct RangeEnumerable : IEnumerable<int>
+public readonly record struct RangeEnumerable : IEnumerable<int>
 {
     private readonly Range _range;
 
@@ -48,7 +48,7 @@ public readonly struct RangeEnumerable : IEnumerable<int>
     }
 }
 
-public struct RangeEnumerator : IEnumerator<int>
+public record struct RangeEnumerator : IEnumerator<int>
 {
     private readonly int _shift;
     private readonly int _end;

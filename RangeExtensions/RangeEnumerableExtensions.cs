@@ -37,4 +37,21 @@ public static class RangeEnumerableExtensions
 
         return array;
     }
+
+    public static List<int> ToList(this RangeEnumerable enumerable)
+    {
+        var length = enumerable.Length;
+        if (length is 0)
+        {
+            return new List<int>(0);
+        }
+
+        var list = new List<int>(length);
+        foreach (var i in enumerable)
+        {
+            list.Add(i);
+        }
+
+        return list;
+    }
 }
