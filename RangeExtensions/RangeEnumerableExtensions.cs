@@ -28,9 +28,9 @@ public static class RangeEnumerableExtensions
         enumerator.MoveNext();
         var value = enumerator.Current;
 
-        foreach (ref var i in array.AsSpan())
+        for (var i = 0; i < array.Length; i++)
         {
-            i = value;
+            array[i] = value;
             value++;
         }
 
