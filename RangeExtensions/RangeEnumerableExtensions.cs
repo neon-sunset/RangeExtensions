@@ -22,7 +22,11 @@ public static class RangeEnumerableExtensions
             return Array.Empty<int>();
         }
 
+#if NET6_0_OR_GREATER
+        var array = GC.AllocateUninitializedArray<int>(length);
+#else
         var array = new int[length];
+#endif
         var enumerator = enumerable.GetEnumerator();
 
         for (var i = 0; i < array.Length; i++)
