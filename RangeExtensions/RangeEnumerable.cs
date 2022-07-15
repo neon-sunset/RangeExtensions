@@ -41,7 +41,11 @@ public readonly record struct RangeEnumerable : IEnumerable<int>
 
     public static implicit operator Range(RangeEnumerable enumerable) => enumerable._range;
 
+#if NETSTANDARD2_0
+    [MethodImpl(MethodImplOptions.NoInlining)]
+#else
     [DoesNotReturn]
+#endif
     private static void InvalidRange(Range range)
     {
         throw new ArgumentOutOfRangeException(nameof(range), range, "Cannot enumerate numbers in range with a head or tail indexed from end.");
@@ -88,7 +92,11 @@ public record struct RangeEnumerator : IEnumerator<int>
     public int Current => _current;
     object IEnumerator.Current => _current;
 
+#if NETSTANDARD2_0
+    [MethodImpl(MethodImplOptions.NoInlining)]
+#else
     [DoesNotReturn]
+#endif
     private static void InvalidRange(Range range)
     {
         throw new ArgumentOutOfRangeException(nameof(range), range, "Cannot enumerate numbers in range with a head or tail indexed from end.");
