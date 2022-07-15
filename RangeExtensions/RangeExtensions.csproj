@@ -1,6 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Authors>neon-sunset</Authors>
+    <RepositoryUrl>https://github.com/neon-sunset/RangeExtensions</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <TargetFrameworks>netstandard2.1;netcoreapp3.1;net6.0</TargetFrameworks>
     <LangVersion>10</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
