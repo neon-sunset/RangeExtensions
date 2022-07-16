@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace System.Linq;
@@ -18,6 +19,14 @@ public readonly record struct RangeEnumerable : IEnumerable<int>
         {
             InvalidRange(range);
         }
+
+        Range = range;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal RangeEnumerable(Range range, bool skipValidation)
+    {
+        Debug.Assert(skipValidation);
 
         Range = range;
     }
@@ -63,11 +72,11 @@ public readonly record struct RangeEnumerable : IEnumerable<int>
             : start - end;
     }
 
-    public RangeEnumerator GetEnumerator() => Range.GetEnumerator();
+    public RangeEnumerator GetEnumerator() => Range.GetEnumeratorUnchecked();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    IEnumerator<int> IEnumerable<int>.GetEnumerator() => Range.GetEnumerator();
-    IEnumerator IEnumerable.GetEnumerator() => Range.GetEnumerator();
+    IEnumerator<int> IEnumerable<int>.GetEnumerator() => Range.GetEnumeratorUnchecked();
+    IEnumerator IEnumerable.GetEnumerator() => Range.GetEnumeratorUnchecked();
 
     public static implicit operator RangeEnumerable(Range range) => new(range);
 
@@ -102,6 +111,28 @@ public record struct RangeEnumerator : IEnumerator<int>
         {
             InvalidRange(range);
         }
+
+        var start = range.Start.Value;
+        var end = range.End.Value;
+
+        if (start < end)
+        {
+            _shift = 1;
+            _current = start - 1;
+            _end = end;
+        }
+        else
+        {
+            _shift = -1;
+            _current = start;
+            _end = end - 1;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal RangeEnumerator(Range range, bool skipValidation)
+    {
+        Debug.Assert(skipValidation);
 
         var start = range.Start.Value;
         var end = range.End.Value;

@@ -9,6 +9,12 @@ public static class RangeExtensions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static RangeEnumerator GetEnumeratorUnchecked(this Range range)
+    {
+        return new RangeEnumerator(range, skipValidation: true);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int[] ToArray(this Range range)
     {
         return range.AsEnumerable().ToArray();

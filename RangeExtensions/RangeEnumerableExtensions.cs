@@ -68,7 +68,7 @@ public static class RangeEnumerableExtensions
     {
         var reversed = new Range(enumerable.Range.End, enumerable.Range.Start);
 
-        return new RangeEnumerable(reversed);
+        return new RangeEnumerable(reversed, skipValidation: true);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -89,7 +89,7 @@ public static class RangeEnumerableExtensions
             ? initialRange.Start.Value + count
             : initialRange.Start.Value - count;
 
-        return new RangeEnumerable(new Range(newStart, initialRange.End));
+        return new RangeEnumerable(new Range(newStart, initialRange.End), skipValidation: true);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -110,7 +110,7 @@ public static class RangeEnumerableExtensions
             ? initialRange.Start.Value + count
             : initialRange.Start.Value - count;
 
-        return new RangeEnumerable(new Range(initialRange.Start, newEnd));
+        return new RangeEnumerable(new Range(initialRange.Start, newEnd), skipValidation: true);
     }
 
     public static int[] ToArray(this RangeEnumerable enumerable)

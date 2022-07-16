@@ -7,7 +7,7 @@ namespace RangeExtensions.Benchmarks;
 [DisassemblyDiagnoser(maxDepth: 5, exportCombinedDisassemblyReport: true)]
 public class ForEach
 {
-    [Params(10, 1000, 10000000)]
+    [Params(100, 10000, 10000000)]
     public int Length;
 
     [Benchmark(Baseline = true)]

@@ -4,6 +4,9 @@
     <Authors>neon-sunset</Authors>
     <RepositoryUrl>https://github.com/neon-sunset/RangeExtensions</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>Range;Extensions;LINQ;IEnumerable;foreach;RangeForEach</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Description>Extensions for Range type that provide support for 'foreach' and additional IEnumerable-compatible features.</Description>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -23,6 +26,10 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="IndexRange" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)../README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 
 </Project>
