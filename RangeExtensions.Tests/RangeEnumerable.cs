@@ -47,4 +47,16 @@ public class RangeEnumerableTests
 
         Assert.Throws<ArgumentOutOfRangeException>(AsEnumerable);
     }
+
+    [Theory]
+    [MemberData(nameof(InvalidRanges))]
+    public void RangeEnumerator_ThrowsOnInvalidRange(Range range)
+    {
+        void Enumerate()
+        {
+            foreach (var i in range) { }
+        }
+
+        Assert.Throws<ArgumentOutOfRangeException>(Enumerate);
+    }
 }
