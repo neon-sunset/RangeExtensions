@@ -44,4 +44,4 @@ jobs:
     - name: Build, Test, Pack, Publish
       shell: pwsh
       run: |
-        dotnet test -c release -r win-x64 --no-self-contained
+        dotnet test -c release -r win-x64
