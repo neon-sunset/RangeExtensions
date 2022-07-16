@@ -153,14 +153,4 @@ public static class RangeEnumerableExtensions
 
         return list;
     }
-
-#if NETSTANDARD2_0
-    [MethodImpl(MethodImplOptions.NoInlining)]
-#else
-    [DoesNotReturn]
-#endif
-    private static void IndexOutOfRange()
-    {
-        throw new IndexOutOfRangeException();
-    }
 }

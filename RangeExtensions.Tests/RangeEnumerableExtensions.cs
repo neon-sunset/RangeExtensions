@@ -7,6 +7,16 @@ public class RangeEnumerableExtensions
 
     [Theory]
     [MemberData(nameof(ValidRangePairs))]
+    public void Any_MatchesIEnumerableAny(Range range, IEnumerable<int> enumerable)
+    {
+        var anyRange = range.AsEnumerable().Any();
+        var anyEnumerable = enumerable.Any();
+
+        Assert.Equal(anyEnumerable, anyRange);
+    }
+
+    [Theory]
+    [MemberData(nameof(ValidRangePairs))]
     public void Average_MatchesIEnumerableAverage(Range range, IEnumerable<int> enumerable)
     {
         var rangeEnumerable = range.AsEnumerable();
@@ -131,20 +141,24 @@ public class RangeEnumerableExtensions
     [MemberData(nameof(ValidRangePairs))]
     public void Skip_MatchesIEnumerableSkip(Range range, IEnumerable<int> enumerable)
     {
-        var rangeSkip = range.AsEnumerable().Skip(1);
-        var enumerableSkip = enumerable.Skip(1);
+        var values = new[] { 0, 1, 10, 1337, int.MaxValue };
 
-        Assert.Equal(enumerableSkip, rangeSkip);
+        var rangeResults = values.Select(i => (IEnumerable<int>)range.AsEnumerable().Skip(i));
+        var enumerableResults = values.Select(i => enumerable.Skip(i));
+
+        Assert.Equal(enumerableResults, rangeResults);
     }
 
     [Theory]
     [MemberData(nameof(ValidRangePairs))]
     public void Take_MatchesIEnumerableTake(Range range, IEnumerable<int> enumerable)
     {
-        var rangeTake = range.AsEnumerable().Take(1);
-        var enumerableTake = enumerable.Take(1);
+        var values = new[] { 0, 1, 10, 1337, int.MaxValue };
 
-        Assert.Equal(enumerableTake, rangeTake);
+        var rangeResults = values.Select(i => (IEnumerable<int>)range.AsEnumerable().Take(i));
+        var enumerableResults = values.Select(i => enumerable.Take(i));
+
+        Assert.Equal(enumerableResults, rangeResults);
     }
 
     [Theory]
