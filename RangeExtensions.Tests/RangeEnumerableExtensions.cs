@@ -3,7 +3,6 @@
 public class RangeEnumerableExtensions
 {
     private static IEnumerable<object[]> ValidRangePairs() => Data.ValidRangePairs();
-    private static IEnumerable<object[]> InvalidRanges() => Data.InvalidRanges();
     private static IEnumerable<object[]> EmptyRanges() => Data.EmptyRanges();
 
     [Theory]
