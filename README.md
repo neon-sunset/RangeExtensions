@@ -1,7 +1,7 @@
 # RangeExtensions
 [![CI/CD](https://github.com/neon-sunset/RangeExtensions/actions/workflows/dotnet-releaser.yml/badge.svg)](https://github.com/neon-sunset/RangeExtensions/actions/workflows/dotnet-releaser.yml) [![nuget](https://badgen.net/nuget/v/RangeExtensions/latest)](https://www.nuget.org/packages/RangeExtensions/) [![Coverage Status](https://coveralls.io/repos/github/neon-sunset/RangeExtensions/badge.svg)](https://coveralls.io/github/neon-sunset/RangeExtensions)
 
-Extensions for Range type to support 'foreach' and 'RangeEnumerable' that implements 'IEnumerable<int>'.
+Extensions for Range type to support `foreach` and `RangeEnumerable` that implements `IEnumerable<int>`.
 - Correctness is verified against standard `IEnumerable<int>` and `Enumerable.Range` behavior
 - Performance is hand tuned to produce efficient native code with no allocations as long as `RangeEnumerable` isn't boxed into `IEnumerable<int>` (same applies to enumerator)
 
