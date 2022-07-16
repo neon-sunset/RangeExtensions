@@ -1,7 +1,9 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace RangeExtensions.Benchmarks;
 
+// [ShortRunJob(RuntimeMoniker.Net48)]
 [ShortRunJob]
 [MemoryDiagnoser]
 [DisassemblyDiagnoser(maxDepth: 5, exportCombinedDisassemblyReport: true)]
