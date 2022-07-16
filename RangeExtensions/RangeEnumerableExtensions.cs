@@ -13,7 +13,7 @@ public static class RangeEnumerableExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double Average(this RangeEnumerable enumerable)
     {
-        return ((double)enumerable.First + enumerable.Last) / 2;
+        return ((double)enumerable.GetFirst() + enumerable.GetLast()) / 2;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37,25 +37,25 @@ public static class RangeEnumerableExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int First(this RangeEnumerable enumerable)
     {
-        return enumerable.First;
+        return enumerable.GetFirst();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Last(this RangeEnumerable enumerable)
     {
-        return enumerable.Last;
+        return enumerable.GetLast();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Max(this RangeEnumerable enumerable)
     {
-        return Math.Max(enumerable.First, enumerable.Last);
+        return Math.Max(enumerable.GetFirst(), enumerable.GetLast());
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Min(this RangeEnumerable enumerable)
     {
-        return Math.Min(enumerable.First, enumerable.Last);
+        return Math.Min(enumerable.GetFirst(), enumerable.GetLast());
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

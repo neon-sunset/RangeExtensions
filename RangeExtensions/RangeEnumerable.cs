@@ -26,13 +26,29 @@ public readonly record struct RangeEnumerable : IEnumerable<int>
         ? RangeDirection.Ascending
         : RangeDirection.Descending;
 
-    internal int First => Range.Start.Value < Range.End.Value
+    internal int GetFirst()
+    {
+        if (Range.Start.Value == Range.End.Value)
+        {
+            EmptyRange();
+        }
+
+        return Range.Start.Value < Range.End.Value
         ? Range.Start.Value
         : Range.Start.Value - 1;
+    }
 
-    internal int Last => Range.End.Value > Range.Start.Value
+    internal int GetLast()
+    {
+        if (Range.Start.Value == Range.End.Value)
+        {
+            EmptyRange();
+        }
+
+        return Range.End.Value > Range.Start.Value
         ? Range.End.Value - 1
         : Range.End.Value;
+    }
 
     public int Length
     {
@@ -65,6 +81,11 @@ public readonly record struct RangeEnumerable : IEnumerable<int>
     private static void InvalidRange(Range range)
     {
         throw new ArgumentOutOfRangeException(nameof(range), range, "Cannot enumerate numbers in range with a head or tail indexed from end.");
+    }
+
+    private static void EmptyRange()
+    {
+        throw new InvalidOperationException("Range constains no elements.");
     }
 }
 
