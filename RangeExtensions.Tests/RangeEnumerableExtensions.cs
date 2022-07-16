@@ -4,6 +4,7 @@ public class RangeEnumerableExtensions
 {
     private static IEnumerable<object[]> ValidRangePairs() => Data.ValidRangePairs();
     private static IEnumerable<object[]> InvalidRanges() => Data.InvalidRanges();
+    private static IEnumerable<object[]> EmptyRanges() => Data.EmptyRanges();
 
     [Theory]
     [MemberData(nameof(ValidRangePairs))]
@@ -29,6 +30,18 @@ public class RangeEnumerableExtensions
         var enumerableAverage = enumerable.Average();
 
         Assert.Equal(enumerableAverage, rangeAverage);
+    }
+
+    [Theory]
+    [MemberData(nameof(EmptyRanges))]
+    public void Average_ThrowsOnEmptyRange(Range range)
+    {
+        void Average()
+        {
+            _ = range.AsEnumerable().Average();
+        }
+
+        Assert.Throws<InvalidOperationException>(Average);
     }
 
     [Theory]
@@ -80,6 +93,18 @@ public class RangeEnumerableExtensions
     }
 
     [Theory]
+    [MemberData(nameof(EmptyRanges))]
+    public void First_ThrowsOnEmptyRange(Range range)
+    {
+        void First()
+        {
+            _ = range.AsEnumerable().First();
+        }
+
+        Assert.Throws<InvalidOperationException>(First);
+    }
+
+    [Theory]
     [MemberData(nameof(ValidRangePairs))]
     public void Last_MatchesIEnumerableLast(Range range, IEnumerable<int> enumerable)
     {
@@ -93,6 +118,18 @@ public class RangeEnumerableExtensions
         var enumerableLast = enumerable.Last();
 
         Assert.Equal(enumerableLast, rangeLast);
+    }
+
+    [Theory]
+    [MemberData(nameof(EmptyRanges))]
+    public void Last_ThrowsOnEmptyRange(Range range)
+    {
+        void Last()
+        {
+            _ = range.AsEnumerable().Last();
+        }
+
+        Assert.Throws<InvalidOperationException>(Last);
     }
 
     [Theory]
@@ -112,6 +149,18 @@ public class RangeEnumerableExtensions
     }
 
     [Theory]
+    [MemberData(nameof(EmptyRanges))]
+    public void Max_ThrowsOnEmptyRange(Range range)
+    {
+        void Max()
+        {
+            _ = range.AsEnumerable().Max();
+        }
+
+        Assert.Throws<InvalidOperationException>(Max);
+    }
+
+    [Theory]
     [MemberData(nameof(ValidRangePairs))]
     public void Min_MatchesIEnumerableMin(Range range, IEnumerable<int> enumerable)
     {
@@ -125,6 +174,18 @@ public class RangeEnumerableExtensions
         var enumerableMin = enumerable.Min();
 
         Assert.Equal(enumerableMin, rangeMin);
+    }
+
+    [Theory]
+    [MemberData(nameof(EmptyRanges))]
+    public void Min_ThrowsOnEmptyRange(Range range)
+    {
+        void Min()
+        {
+            _ = range.AsEnumerable().Min();
+        }
+
+        Assert.Throws<InvalidOperationException>(Min);
     }
 
     [Theory]
