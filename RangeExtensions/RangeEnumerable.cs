@@ -26,6 +26,7 @@ public readonly record struct RangeEnumerable : IEnumerable<int>
         ? RangeDirection.Ascending
         : RangeDirection.Descending;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal int GetFirst()
     {
         if (Range.Start.Value == Range.End.Value)
@@ -38,6 +39,7 @@ public readonly record struct RangeEnumerable : IEnumerable<int>
         : Range.Start.Value - 1;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal int GetLast()
     {
         if (Range.Start.Value == Range.End.Value)
@@ -50,17 +52,15 @@ public readonly record struct RangeEnumerable : IEnumerable<int>
         : Range.End.Value;
     }
 
-    public int Length
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int Count()
     {
-        get
-        {
-            var start = Range.Start.Value;
-            var end = Range.End.Value;
+        var start = Range.Start.Value;
+        var end = Range.End.Value;
 
-            return start < end
-                ? end - start
-                : start - end;
-        }
+        return start < end
+            ? end - start
+            : start - end;
     }
 
     public RangeEnumerator GetEnumerator() => Range.GetEnumerator();

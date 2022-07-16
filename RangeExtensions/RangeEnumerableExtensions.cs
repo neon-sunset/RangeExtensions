@@ -11,6 +11,12 @@ public static class RangeEnumerableExtensions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool Any(this RangeEnumerable range)
+    {
+        return range.Count() > 0;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double Average(this RangeEnumerable enumerable)
     {
         return ((double)enumerable.GetFirst() + enumerable.GetLast()) / 2;
@@ -19,13 +25,12 @@ public static class RangeEnumerableExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Contains(this RangeEnumerable enumerable, int value)
     {
-        return value >= enumerable.Min() && value <= enumerable.Max();
-    }
+        if (enumerable.Count() is 0)
+        {
+            return false;
+        }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Count(this RangeEnumerable enumerable)
-    {
-        return enumerable.Length;
+        return value >= enumerable.Min() && value <= enumerable.Max();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -69,7 +74,7 @@ public static class RangeEnumerableExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RangeEnumerable Skip(this RangeEnumerable enumerable, int count)
     {
-        if (count >= enumerable.Length)
+        if (count >= enumerable.Count())
         {
             return RangeEnumerable.Empty;
         }
@@ -90,7 +95,7 @@ public static class RangeEnumerableExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RangeEnumerable Take(this RangeEnumerable enumerable, int count)
     {
-        if (count >= enumerable.Length)
+        if (count >= enumerable.Count())
         {
             return enumerable;
         }
@@ -110,7 +115,7 @@ public static class RangeEnumerableExtensions
 
     public static int[] ToArray(this RangeEnumerable enumerable)
     {
-        var length = enumerable.Length;
+        var length = enumerable.Count();
         if (length is 0)
         {
             return Array.Empty<int>();
@@ -134,7 +139,7 @@ public static class RangeEnumerableExtensions
 
     public static List<int> ToList(this RangeEnumerable enumerable)
     {
-        var length = enumerable.Length;
+        var length = enumerable.Count();
         if (length is 0)
         {
             return new List<int>(0);

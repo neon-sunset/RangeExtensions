@@ -10,7 +10,7 @@ public class RangeEnumerableExtensions
     public void Average_MatchesIEnumerableAverage(Range range, IEnumerable<int> enumerable)
     {
         var rangeEnumerable = range.AsEnumerable();
-        if (rangeEnumerable.Length is 0)
+        if (rangeEnumerable.Count() is 0)
         {
             return;
         }
@@ -19,6 +19,17 @@ public class RangeEnumerableExtensions
         var enumerableAverage = enumerable.Average();
 
         Assert.Equal(enumerableAverage, rangeAverage);
+    }
+
+    [Theory]
+    [MemberData(nameof(ValidRangePairs))]
+    public void Contains_MatchesIEnumerableContains(Range range, IEnumerable<int> enumerable)
+    {
+        var numbers = new[] { 0, 10, 1001, 178000, int.MaxValue };
+        var rangeResults = numbers.Select(i => range.AsEnumerable().Contains(i));
+        var enumerableResults = numbers.Select(i => enumerable.Contains(i));
+
+        Assert.Equal(enumerableResults, rangeResults);
     }
 
     [Theory]
@@ -38,6 +49,7 @@ public class RangeEnumerableExtensions
         var rangeDistinct = range.AsEnumerable().Distinct();
         var enumerableDistinct = enumerable.Distinct();
 
+        Assert.Equal(range.AsEnumerable(), rangeDistinct);
         Assert.Equal(enumerableDistinct, rangeDistinct);
     }
 
@@ -46,7 +58,7 @@ public class RangeEnumerableExtensions
     public void First_MatchesIEnumerableFirst(Range range, IEnumerable<int> enumerable)
     {
         var rangeEnumerable = range.AsEnumerable();
-        if (rangeEnumerable.Length is 0)
+        if (rangeEnumerable.Count() is 0)
         {
             return;
         }
@@ -62,7 +74,7 @@ public class RangeEnumerableExtensions
     public void Last_MatchesIEnumerableLast(Range range, IEnumerable<int> enumerable)
     {
         var rangeEnumerable = range.AsEnumerable();
-        if (rangeEnumerable.Length is 0)
+        if (rangeEnumerable.Count() is 0)
         {
             return;
         }
@@ -78,7 +90,7 @@ public class RangeEnumerableExtensions
     public void Max_MatchesIEnumerableMax(Range range, IEnumerable<int> enumerable)
     {
         var rangeEnumerable = range.AsEnumerable();
-        if (rangeEnumerable.Length is 0)
+        if (rangeEnumerable.Count() is 0)
         {
             return;
         }
@@ -94,7 +106,7 @@ public class RangeEnumerableExtensions
     public void Min_MatchesIEnumerableMin(Range range, IEnumerable<int> enumerable)
     {
         var rangeEnumerable = range.AsEnumerable();
-        if (rangeEnumerable.Length is 0)
+        if (rangeEnumerable.Count() is 0)
         {
             return;
         }
