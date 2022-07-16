@@ -50,4 +50,15 @@ public class RangeEnumerableTests
 
         Assert.Throws<ArgumentOutOfRangeException>(Enumerate);
     }
+
+    [Fact]
+    public void RangeEnumerator_ResetThrows()
+    {
+        static void Reset()
+        {
+            (0..int.MaxValue).GetEnumerator().Reset();
+        }
+
+        Assert.Throws<NotSupportedException>(Reset);
+    }
 }
