@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace System.Linq;
 
 public static class RangeEnumerableExtensions
@@ -9,9 +11,101 @@ public static class RangeEnumerableExtensions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double Average(this RangeEnumerable enumerable)
+    {
+        return ((double)enumerable.First + enumerable.Last) / 2;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool Contains(this RangeEnumerable enumerable, int value)
+    {
+        return value >= enumerable.Min() && value <= enumerable.Max();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Count(this RangeEnumerable enumerable)
     {
         return enumerable.Length;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static RangeEnumerable Distinct(this RangeEnumerable enumerable)
+    {
+        return enumerable;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int First(this RangeEnumerable enumerable)
+    {
+        return enumerable.First;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int Last(this RangeEnumerable enumerable)
+    {
+        return enumerable.Last;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int Max(this RangeEnumerable enumerable)
+    {
+        return Math.Max(enumerable.First, enumerable.Last);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int Min(this RangeEnumerable enumerable)
+    {
+        return Math.Min(enumerable.First, enumerable.Last);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static RangeEnumerable Reverse(this RangeEnumerable enumerable)
+    {
+        var reversed = new Range(enumerable.Range.End, enumerable.Range.Start);
+
+        return new RangeEnumerable(reversed);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static RangeEnumerable Skip(this RangeEnumerable enumerable, int count)
+    {
+        if (count >= enumerable.Length)
+        {
+            return RangeEnumerable.Empty;
+        }
+
+        if (count <= 0)
+        {
+            return enumerable;
+        }
+
+        var initialRange = enumerable.Range;
+        var newStart = enumerable.Direction is RangeDirection.Ascending
+            ? initialRange.Start.Value + count
+            : initialRange.Start.Value - count;
+
+        return new RangeEnumerable(new Range(newStart, initialRange.End));
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static RangeEnumerable Take(this RangeEnumerable enumerable, int count)
+    {
+        if (count >= enumerable.Length)
+        {
+            return enumerable;
+        }
+
+        if (count <= 0)
+        {
+            return RangeEnumerable.Empty;
+        }
+
+        var initialRange = enumerable.Range;
+        var newEnd = enumerable.Direction is RangeDirection.Ascending
+            ? initialRange.Start.Value + count
+            : initialRange.Start.Value - count;
+
+        return new RangeEnumerable(new Range(initialRange.Start, newEnd));
     }
 
     public static int[] ToArray(this RangeEnumerable enumerable)
@@ -53,5 +147,15 @@ public static class RangeEnumerableExtensions
         }
 
         return list;
+    }
+
+#if NETSTANDARD2_0
+    [MethodImpl(MethodImplOptions.NoInlining)]
+#else
+    [DoesNotReturn]
+#endif
+    private static void IndexOutOfRange()
+    {
+        throw new IndexOutOfRangeException();
     }
 }

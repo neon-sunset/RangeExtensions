@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace RangeExtensions;
+namespace System.Linq;
+
+internal enum RangeDirection { Ascending, Descending }
 
 public readonly record struct RangeEnumerable : IEnumerable<int>
 {
-    private readonly Range _range;
+    internal static readonly RangeEnumerable Empty = new();
+
+    internal readonly Range Range;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public RangeEnumerable(Range range)
@@ -15,15 +19,27 @@ public readonly record struct RangeEnumerable : IEnumerable<int>
             InvalidRange(range);
         }
 
-        _range = range;
+        Range = range;
     }
+
+    internal RangeDirection Direction => Range.Start.Value < Range.End.Value
+        ? RangeDirection.Ascending
+        : RangeDirection.Descending;
+
+    internal int First => Range.Start.Value < Range.End.Value
+        ? Range.Start.Value
+        : Range.Start.Value - 1;
+
+    internal int Last => Range.End.Value > Range.Start.Value
+        ? Range.End.Value - 1
+        : Range.End.Value;
 
     public int Length
     {
         get
         {
-            var start = _range.Start.Value;
-            var end = _range.End.Value;
+            var start = Range.Start.Value;
+            var end = Range.End.Value;
 
             return start < end
                 ? end - start
@@ -31,15 +47,15 @@ public readonly record struct RangeEnumerable : IEnumerable<int>
         }
     }
 
-    public RangeEnumerator GetEnumerator() => _range.GetEnumerator();
+    public RangeEnumerator GetEnumerator() => Range.GetEnumerator();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    IEnumerator<int> IEnumerable<int>.GetEnumerator() => _range.GetEnumerator();
-    IEnumerator IEnumerable.GetEnumerator() => _range.GetEnumerator();
+    IEnumerator<int> IEnumerable<int>.GetEnumerator() => Range.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => Range.GetEnumerator();
 
     public static implicit operator RangeEnumerable(Range range) => new(range);
 
-    public static implicit operator Range(RangeEnumerable enumerable) => enumerable._range;
+    public static implicit operator Range(RangeEnumerable enumerable) => enumerable.Range;
 
 #if NETSTANDARD2_0
     [MethodImpl(MethodImplOptions.NoInlining)]
