@@ -39,7 +39,7 @@ var firstTen = (400...720).AsEnumerable().Take(10);
 ```
 
 ## Performance
-In short: 10x fast vs `Enumerable.Range()`.
+In short: 10x fast vs `Enumerable.Range()` and as fast as a plain `for` loop (there's small fixed overhead to check range correctness).
 ``` ini
 
 BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
