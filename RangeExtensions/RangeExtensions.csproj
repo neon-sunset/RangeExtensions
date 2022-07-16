@@ -6,7 +6,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>Range;Extensions;LINQ;IEnumerable;foreach;RangeForEach</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Description>Extensions for Range type that provide support for 'foreach' and additional IEnumerable-compatible features.</Description>
+    <Description>Extensions for Range type to support 'foreach' and 'RangeEnumerable' that implements 'IEnumerable<int>'.</Description>
   </PropertyGroup>
 
   <PropertyGroup>
