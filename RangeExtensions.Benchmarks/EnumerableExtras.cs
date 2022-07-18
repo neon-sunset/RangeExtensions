@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
 
 namespace RangeExtensions.Benchmarks;
@@ -7,42 +8,32 @@ namespace RangeExtensions.Benchmarks;
 [DisassemblyDiagnoser(maxDepth: 5, exportCombinedDisassemblyReport: true)]
 public class EnumerableExtras
 {
-    [Params(10, 1000, 1000000)]
+    [Params(1, 10, 1000, 1000000)]
     public int Length;
 
-    [Benchmark]
-    public int RangeCount()
-    {
-        return (0..Length).AsEnumerable().Count();
-    }
+    [Benchmark] public bool RangeAny() => Range(Length).Any();
 
-    [Benchmark]
-    public int EnumerableCount()
-    {
-        return Enumerable.Range(0, Length).Count();
-    }
+    [Benchmark] public bool EnumerableAny() => Enumerable(Length).Any();
 
-    [Benchmark]
-    public int RangeMax()
-    {
-        return (0..Length).AsEnumerable().Max();
-    }
+    [Benchmark] public bool RangeContains() => Range(Length).Contains(Length / 2);
 
-    [Benchmark]
-    public int EnumerableMax()
-    {
-        return Enumerable.Range(0, Length).Max();
-    }
+    [Benchmark] public bool EnumerableContains() => Enumerable(Length).Contains(Length / 2);
 
-    [Benchmark]
-    public double RangeAverage()
-    {
-        return (0..Length).AsEnumerable().Average();
-    }
+    [Benchmark] public int RangeCount() => Range(Length).Count();
 
-    [Benchmark]
-    public double EnumerableAverage()
-    {
-        return Enumerable.Range(0, Length).Average();
-    }
+    [Benchmark] public int EnumerableCount() => Enumerable(Length).Count();
+
+    [Benchmark] public int RangeMax() => Range(Length).Max();
+
+    [Benchmark] public int EnumerableMax() => Enumerable(Length).Max();
+
+    [Benchmark] public double RangeAverage() => Range(Length).Average();
+
+    [Benchmark] public double EnumerableAverage() => Enumerable(Length).Average();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static RangeEnumerable Range(int length) => 0..length;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static IEnumerable<int> Enumerable(int length) => System.Linq.Enumerable.Range(0, length);
 }
