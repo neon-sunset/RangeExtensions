@@ -1,4 +1,6 @@
-﻿namespace RangeExtensions.Tests;
+﻿using Xunit.Sdk;
+
+namespace RangeExtensions.Tests;
 
 public class RangeEnumerableExtensions
 {
@@ -221,16 +223,23 @@ public class RangeEnumerableExtensions
     [MemberData(nameof(ValidRangePairs))]
     public void Sum_MatchesIEnumerableSum(Range range, IEnumerable<int> enumerable)
     {
-        var rangeEnumerable = range.AsEnumerable();
-        if (rangeEnumerable.Count() is 0 || rangeEnumerable.Average() > 32768d)
+        int Sum() => range.AsEnumerable().Sum();
+        int SumEnumerable() => enumerable.Sum();
+
+        try
         {
-            return;
+            Assert.Equal(SumEnumerable(), Sum());
         }
+        catch (Exception expectedException)
+        {
+            if (expectedException is EqualException)
+            {
+                throw;
+            }
 
-        var rangeSum = range.AsEnumerable().Sum();
-        var enumerableSum = enumerable.AsEnumerable().Sum();
-
-        Assert.Equal(enumerableSum, rangeSum);
+            Assert.Throws(expectedException.GetType(), () => Sum());
+            Assert.Throws(expectedException.GetType(), () => SumEnumerable());
+        }
     }
 
     [Fact]

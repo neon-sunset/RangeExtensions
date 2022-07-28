@@ -131,7 +131,7 @@ public static class RangeEnumerableExtensions
         }
 
         var sum = 0;
-        for (var i = 0; i < max; i++)
+        foreach (var i in enumerable)
         {
             sum = checked(sum + i);
         }
