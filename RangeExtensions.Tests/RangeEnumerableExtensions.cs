@@ -4,6 +4,13 @@ public class RangeEnumerableExtensions
 {
     private static IEnumerable<object[]> ValidRangePairs() => Data.ValidRangePairs();
     private static IEnumerable<object[]> EmptyRanges() => Data.EmptyRanges();
+    private static IEnumerable<int> Numbers(Range range) =>
+        new[]
+        {
+            0, 1, -1, 7, -7, 10, 1001, 178000, int.MinValue, int.MaxValue,
+            range.Start.Value, range.Start.Value + 1, range.Start.Value - 1,
+            range.End.Value, range.End.Value + 1, range.End.Value - 1
+        };
 
     [Theory]
     [MemberData(nameof(ValidRangePairs))]
@@ -47,7 +54,8 @@ public class RangeEnumerableExtensions
     [MemberData(nameof(ValidRangePairs))]
     public void Contains_MatchesIEnumerableContains(Range range, IEnumerable<int> enumerable)
     {
-        var numbers = new[] { 0, 10, 1001, 178000, int.MaxValue };
+        var numbers = Numbers(range);
+
         var rangeResults = numbers.Select(i => range.AsEnumerable().Contains(i));
         var enumerableResults = numbers.Select(i => enumerable.Contains(i));
 
@@ -201,22 +209,50 @@ public class RangeEnumerableExtensions
     [MemberData(nameof(ValidRangePairs))]
     public void Skip_MatchesIEnumerableSkip(Range range, IEnumerable<int> enumerable)
     {
-        var values = new[] { 0, 1, 10, 1337, int.MaxValue };
+        var numbers = Numbers(range);
 
-        var rangeResults = values.Select(i => (IEnumerable<int>)range.AsEnumerable().Skip(i));
-        var enumerableResults = values.Select(i => enumerable.Skip(i));
+        var rangeResults = numbers.Select(i => (IEnumerable<int>)range.AsEnumerable().Skip(i));
+        var enumerableResults = numbers.Select(i => enumerable.Skip(i));
 
         Assert.Equal(enumerableResults, rangeResults);
     }
 
     [Theory]
     [MemberData(nameof(ValidRangePairs))]
+    public void Sum_MatchesIEnumerableSum(Range range, IEnumerable<int> enumerable)
+    {
+        var rangeEnumerable = range.AsEnumerable();
+        if (rangeEnumerable.Count() is 0 || rangeEnumerable.Average() > 32768d)
+        {
+            return;
+        }
+
+        var rangeSum = range.AsEnumerable().Sum();
+        var enumerableSum = enumerable.AsEnumerable().Sum();
+
+        Assert.Equal(enumerableSum, rangeSum);
+    }
+
+    [Fact]
+    public void Sum_ThrowsOnOverflow()
+    {
+        static void Sum()
+        {
+            _ = (0..65537).AsEnumerable().Sum();
+        }
+
+        Assert.Throws<OverflowException>(Sum);
+    }
+
+
+    [Theory]
+    [MemberData(nameof(ValidRangePairs))]
     public void Take_MatchesIEnumerableTake(Range range, IEnumerable<int> enumerable)
     {
-        var values = new[] { 0, 1, 10, 1337, int.MaxValue };
+        var numbers = Numbers(range);
 
-        var rangeResults = values.Select(i => (IEnumerable<int>)range.AsEnumerable().Take(i));
-        var enumerableResults = values.Select(i => enumerable.Take(i));
+        var rangeResults = numbers.Select(i => (IEnumerable<int>)range.AsEnumerable().Take(i));
+        var enumerableResults = numbers.Select(i => enumerable.Take(i));
 
         Assert.Equal(enumerableResults, rangeResults);
     }

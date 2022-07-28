@@ -8,7 +8,7 @@ namespace RangeExtensions.Benchmarks;
 [DisassemblyDiagnoser(maxDepth: 5, exportCombinedDisassemblyReport: true)]
 public class EnumerableExtras
 {
-    [Params(1, 10, 1000, 1000000)]
+    [Params(1, 10, 100, 10000)]
     public int Length;
 
     [Benchmark] public bool RangeAny() => Range(Length).Any();
@@ -30,6 +30,10 @@ public class EnumerableExtras
     [Benchmark] public double RangeAverage() => Range(Length).Average();
 
     [Benchmark] public double EnumerableAverage() => Enumerable(Length).Average();
+
+    [Benchmark] public int RangeSum() => Range(Length).Sum();
+
+    [Benchmark] public int EnumerableSum() => Enumerable(Length).Sum();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static RangeEnumerable Range(int length) => 0..length;
