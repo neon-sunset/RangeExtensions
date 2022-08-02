@@ -2,8 +2,8 @@ namespace RangeExtensions.Tests;
 
 public class RangeEnumerableTests
 {
-    private static IEnumerable<object[]> ValidRangePairs() => Data.ValidRangePairs();
-    private static IEnumerable<object[]> InvalidRanges() => Data.InvalidRanges();
+    public static IEnumerable<object[]> ValidRangePairs() => Data.ValidRangePairs();
+    public static IEnumerable<object[]> InvalidRanges() => Data.InvalidRanges();
 
     [Theory]
     [MemberData(nameof(ValidRangePairs))]

@@ -4,9 +4,9 @@ namespace RangeExtensions.Tests;
 
 public class RangeEnumerableExtensions
 {
-    private static IEnumerable<object[]> ValidRangePairs() => Data.ValidRangePairs();
-    private static IEnumerable<object[]> EmptyRanges() => Data.EmptyRanges();
-    private static IEnumerable<int> Numbers(Range range) =>
+    public static IEnumerable<object[]> ValidRangePairs() => Data.ValidRangePairs();
+    public static IEnumerable<object[]> EmptyRanges() => Data.EmptyRanges();
+    public static IEnumerable<int> Numbers(Range range) =>
         new[]
         {
             0, 1, -1, 7, -7, 10, 1001, 178000, int.MinValue, int.MaxValue,
