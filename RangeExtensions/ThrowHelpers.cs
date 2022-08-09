@@ -38,6 +38,16 @@ internal static class ThrowHelpers
 #else
     [DoesNotReturn]
 #endif
+    public static void IndexOutOfRange()
+    {
+        throw new IndexOutOfRangeException();
+    }
+
+#if NETSTANDARD2_0
+    [MethodImpl(MethodImplOptions.NoInlining)]
+#else
+    [DoesNotReturn]
+#endif
     private static void InvalidRange(Range range)
     {
         throw new ArgumentOutOfRangeException(nameof(range), range, "Cannot enumerate numbers in range with a head or tail indexed from end.");

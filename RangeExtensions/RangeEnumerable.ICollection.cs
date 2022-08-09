@@ -55,24 +55,21 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         return item >= min && item <= max;
     }
 
-    public void CopyTo(int[] array, int arrayIndex)
+    public void CopyTo(int[] array, int index)
     {
-        var arrayLength = array.Length;
-
-        if (arrayIndex is 0 || arrayIndex > arrayLength)
+        if (index < 0 || index > array.Length)
         {
-            ThrowHelpers.ArgumentOutOfRange();
+            ThrowHelpers.IndexOutOfRange();
         }
 
-        var rangeCount = Count;
-        if (rangeCount > (arrayLength - arrayIndex))
+        if ((array.Length - index) < Count)
         {
             ThrowHelpers.ArgumentOutOfRange();
         }
 
         var enumerator = GetEnumerator();
 
-        for (var i = arrayIndex; i < arrayLength; i++)
+        for (var i = index; i < array.Length; i++)
         {
             _ = enumerator.MoveNext();
 
