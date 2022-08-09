@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace RangeExtensions;
 
 internal static class ThrowHelpers
@@ -28,7 +26,17 @@ internal static class ThrowHelpers
 #if NETSTANDARD2_0
     [MethodImpl(MethodImplOptions.NoInlining)]
 #else
-[DoesNotReturn]
+    [DoesNotReturn]
+#endif
+    public static void ArgumentOutOfRange()
+    {
+        throw new ArgumentOutOfRangeException();
+    }
+
+#if NETSTANDARD2_0
+    [MethodImpl(MethodImplOptions.NoInlining)]
+#else
+    [DoesNotReturn]
 #endif
     private static void InvalidRange(Range range)
     {
@@ -38,7 +46,7 @@ internal static class ThrowHelpers
 #if NETSTANDARD2_0
     [MethodImpl(MethodImplOptions.NoInlining)]
 #else
-[DoesNotReturn]
+    [DoesNotReturn]
 #endif
     private static void EmptyRange()
     {

@@ -3,9 +3,9 @@ using System.Diagnostics;
 
 namespace System.Linq;
 
-public readonly record struct RangeEnumerable : IEnumerable<int>
+public readonly partial record struct RangeEnumerable
 {
-    internal static readonly RangeEnumerable Empty = new();
+    public static RangeEnumerable Empty => default;
 
     internal readonly Range Range;
 
@@ -25,80 +25,91 @@ public readonly record struct RangeEnumerable : IEnumerable<int>
         Range = range;
     }
 
-    public RangeEnumerator GetEnumerator() => Range.GetEnumeratorUnchecked();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Enumerator GetEnumerator()
+    {
+        return GetEnumeratorUnchecked();
+    }
 
-    IEnumerator<int> IEnumerable<int>.GetEnumerator() => Range.GetEnumeratorUnchecked();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private Enumerator GetEnumeratorUnchecked()
+    {
+        return new Enumerator(Range, skipValidation: true);
+    }
 
-    IEnumerator IEnumerable.GetEnumerator() => Range.GetEnumeratorUnchecked();
+    public record struct Enumerator : IEnumerator<int>
+    {
+        private readonly int _shift;
+        private readonly int _end;
+        private int _current;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Enumerator(Range range)
+        {
+            ThrowHelpers.CheckInvalid(range);
+
+            var start = range.Start.Value;
+            var end = range.End.Value;
+
+            if (start < end)
+            {
+                _shift = 1;
+                _current = start - 1;
+                _end = end;
+            }
+            else
+            {
+                _shift = -1;
+                _current = start;
+                _end = end - 1;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal Enumerator(Range range, bool skipValidation)
+        {
+            Debug.Assert(skipValidation);
+
+            var start = range.Start.Value;
+            var end = range.End.Value;
+
+            if (start < end)
+            {
+                _shift = 1;
+                _current = start - 1;
+                _end = end;
+            }
+            else
+            {
+                _shift = -1;
+                _current = start;
+                _end = end - 1;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool MoveNext()
+        {
+            return (_current += _shift) != _end;
+        }
+
+        public int Current
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _current;
+        }
+
+        object IEnumerator.Current => _current;
+
+        public void Reset()
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Dispose() { }
+    }
 
     public static implicit operator RangeEnumerable(Range range) => new(range);
 
     public static implicit operator Range(RangeEnumerable enumerable) => enumerable.Range;
-}
-
-public record struct RangeEnumerator : IEnumerator<int>
-{
-    private readonly int _shift;
-    private readonly int _end;
-    private int _current;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public RangeEnumerator(Range range)
-    {
-        ThrowHelpers.CheckInvalid(range);
-
-        var start = range.Start.Value;
-        var end = range.End.Value;
-
-        if (start < end)
-        {
-            _shift = 1;
-            _current = start - 1;
-            _end = end;
-        }
-        else
-        {
-            _shift = -1;
-            _current = start;
-            _end = end - 1;
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal RangeEnumerator(Range range, bool skipValidation)
-    {
-        Debug.Assert(skipValidation);
-
-        var start = range.Start.Value;
-        var end = range.End.Value;
-
-        if (start < end)
-        {
-            _shift = 1;
-            _current = start - 1;
-            _end = end;
-        }
-        else
-        {
-            _shift = -1;
-            _current = start;
-            _end = end - 1;
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool MoveNext()
-    {
-        return (_current += _shift) != _end;
-    }
-
-    public int Current => _current;
-    object IEnumerator.Current => _current;
-
-    public void Reset()
-    {
-        throw new NotSupportedException();
-    }
-
-    public void Dispose() { }
 }

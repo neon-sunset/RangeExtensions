@@ -9,7 +9,7 @@ namespace RangeExtensions.Benchmarks;
 [DisassemblyDiagnoser(maxDepth: 5, exportCombinedDisassemblyReport: true)]
 public class ForEach
 {
-    [Params(100, 10000, 10000000)]
+    [Params(10, 100, 100_000)]
     public int Length;
 
     [Benchmark(Baseline = true)]
@@ -28,19 +28,7 @@ public class ForEach
     public int Range()
     {
         var ret = 0;
-        foreach (var i in 0..Length)
-        {
-            ret += i;
-        }
-
-        return ret;
-    }
-
-    [Benchmark]
-    public int RangeReverse()
-    {
-        var ret = 0;
-        foreach (var i in Length..0)
+        foreach (var i in ..Length)
         {
             ret += i;
         }
@@ -53,18 +41,6 @@ public class ForEach
     {
         var ret = 0;
         foreach (var i in Enumerable.Range(0, Length))
-        {
-            ret += i;
-        }
-
-        return ret;
-    }
-
-    [Benchmark]
-    public int RangeAsEnumerable()
-    {
-        var ret = 0;
-        foreach (var i in (0..Length).AsEnumerable())
         {
             ret += i;
         }

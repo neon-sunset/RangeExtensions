@@ -8,11 +8,13 @@ public static class RangeEnumerableExtensions
         return new RangeEnumerable(range);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Any(this RangeEnumerable range)
     {
-        return range.Count() > 0;
+        return range.Count > 0;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double Average(this RangeEnumerable enumerable)
     {
         ThrowHelpers.CheckEmpty(enumerable);
@@ -22,29 +24,13 @@ public static class RangeEnumerableExtensions
         return ((double)first + last) / 2;
     }
 
-    public static bool Contains(this RangeEnumerable enumerable, int value)
-    {
-        if (enumerable.Count() is 0)
-        {
-            return false;
-        }
-
-        var (min, max) = MinAndMaxUnchecked(enumerable);
-
-        return value >= min && value <= max;
-    }
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Count(this RangeEnumerable enumerable)
     {
-        var start = enumerable.Range.Start.Value;
-        var end = enumerable.Range.End.Value;
-
-        return start < end
-            ? end - start
-            : start - end;
+        return enumerable.Count;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RangeEnumerable Distinct(this RangeEnumerable enumerable)
     {
         return enumerable;
@@ -72,6 +58,7 @@ public static class RangeEnumerableExtensions
         return start < end ? end - 1 : end;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Max(this RangeEnumerable enumerable)
     {
         ThrowHelpers.CheckEmpty(enumerable);
@@ -81,6 +68,7 @@ public static class RangeEnumerableExtensions
         return Math.Max(first, last);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Min(this RangeEnumerable enumerable)
     {
         ThrowHelpers.CheckEmpty(enumerable);
@@ -98,6 +86,7 @@ public static class RangeEnumerableExtensions
         return new RangeEnumerable(reversed, skipValidation: true);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RangeEnumerable Skip(this RangeEnumerable enumerable, int count)
     {
         if (count >= enumerable.Count())
@@ -139,6 +128,7 @@ public static class RangeEnumerableExtensions
         return sum;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RangeEnumerable Take(this RangeEnumerable enumerable, int count)
     {
         if (count >= enumerable.Count())
@@ -201,16 +191,9 @@ public static class RangeEnumerableExtensions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool IsAscending(RangeEnumerable enumerable)
+    internal static (int, int) MinAndMaxUnchecked(this RangeEnumerable enumerable)
     {
-        return enumerable.Range.Start.Value <= enumerable.Range.End.Value;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static (int, int) MinAndMaxUnchecked(RangeEnumerable enumerable)
-    {
-        var (start, end) = (
-            enumerable.Range.Start.Value, enumerable.Range.End.Value);
+        var (start, end) = enumerable.Range.GetStartAndEnd();
 
         return start <= end
             ? (start, end - 1)
@@ -218,13 +201,18 @@ public static class RangeEnumerableExtensions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static (int, int) FirstAndLastUnchecked(RangeEnumerable enumerable)
+    private static (int, int) FirstAndLastUnchecked(this RangeEnumerable enumerable)
     {
-        var (start, end) = (
-            enumerable.Range.Start.Value, enumerable.Range.End.Value);
+        var (start, end) = enumerable.Range.GetStartAndEnd();
 
         return start <= end
             ? (start, end - 1)
             : (start - 1, end);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsAscending(this RangeEnumerable enumerable)
+    {
+        return enumerable.Range.Start.Value <= enumerable.Range.End.Value;
     }
 }

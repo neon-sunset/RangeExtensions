@@ -20,6 +20,7 @@ internal static class Data
 
     public static IEnumerable<object[]> InvalidRanges()
     {
+        yield return new object[] { 0..^0 };
         yield return new object[] { 0..^10 };
         yield return new object[] { ^5..10 };
         yield return new object[] { ^5..^10 };
