@@ -77,6 +77,31 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         }
     }
 
+#if !NETSTANDARD2_0
+    public void CopyTo(Span<int> span, int index)
+    {
+        if (index < 0 || index > span.Length)
+        {
+            ThrowHelpers.IndexOutOfRange();
+        }
+
+        if ((span.Length - index) < Count)
+        {
+            ThrowHelpers.ArgumentOutOfRange();
+        }
+
+        var enumerator = GetEnumerator();
+        
+        // TODO: SIMDify because why not
+        for (var i = index; i < span.Length; i++)
+        {
+            _ = enumerator.MoveNext();
+
+            span[i] = enumerator.Current;
+        }
+    }
+#endif
+
 #if NETSTANDARD2_0
     [MethodImpl(MethodImplOptions.NoInlining)]
 #else
