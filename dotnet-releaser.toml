@@ -5,4 +5,4 @@ project = "RangeExtensions.sln"
 user = "neon-sunset"
 repo = "RangeExtensions"
 [coveralls]
-publish = false
+# publish = false
