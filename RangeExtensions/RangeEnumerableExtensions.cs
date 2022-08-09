@@ -89,7 +89,7 @@ public static class RangeEnumerableExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RangeEnumerable Skip(this RangeEnumerable enumerable, int count)
     {
-        if (count >= enumerable.Count())
+        if (count >= enumerable.Count)
         {
             return RangeEnumerable.Empty;
         }
@@ -120,7 +120,7 @@ public static class RangeEnumerableExtensions
         }
 
         var sum = 0;
-        foreach (var i in enumerable)
+        for (var i = min; i <= max; i++)
         {
             sum = checked(sum + i);
         }
@@ -131,7 +131,7 @@ public static class RangeEnumerableExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RangeEnumerable Take(this RangeEnumerable enumerable, int count)
     {
-        if (count >= enumerable.Count())
+        if (count >= enumerable.Count)
         {
             return enumerable;
         }
@@ -151,7 +151,7 @@ public static class RangeEnumerableExtensions
 
     public static int[] ToArray(this RangeEnumerable enumerable)
     {
-        var length = enumerable.Count();
+        var length = enumerable.Count;
         if (length is 0)
         {
             return Array.Empty<int>();
@@ -175,7 +175,7 @@ public static class RangeEnumerableExtensions
 
     public static List<int> ToList(this RangeEnumerable enumerable)
     {
-        var length = enumerable.Count();
+        var length = enumerable.Count;
         if (length is 0)
         {
             return new List<int>(0);

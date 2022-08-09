@@ -29,7 +29,7 @@ public class RangeEnumerableExtensions
     public void Average_MatchesIEnumerableAverage(Range range, IEnumerable<int> enumerable)
     {
         var rangeEnumerable = range.AsEnumerable();
-        if (rangeEnumerable.Count() is 0)
+        if (rangeEnumerable.Count is 0)
         {
             return;
         }
@@ -90,7 +90,7 @@ public class RangeEnumerableExtensions
     public void First_MatchesIEnumerableFirst(Range range, IEnumerable<int> enumerable)
     {
         var rangeEnumerable = range.AsEnumerable();
-        if (rangeEnumerable.Count() is 0)
+        if (rangeEnumerable.Count is 0)
         {
             return;
         }
@@ -118,7 +118,7 @@ public class RangeEnumerableExtensions
     public void Last_MatchesIEnumerableLast(Range range, IEnumerable<int> enumerable)
     {
         var rangeEnumerable = range.AsEnumerable();
-        if (rangeEnumerable.Count() is 0)
+        if (rangeEnumerable.Count is 0)
         {
             return;
         }
@@ -146,7 +146,7 @@ public class RangeEnumerableExtensions
     public void Max_MatchesIEnumerableMax(Range range, IEnumerable<int> enumerable)
     {
         var rangeEnumerable = range.AsEnumerable();
-        if (rangeEnumerable.Count() is 0)
+        if (rangeEnumerable.Count is 0)
         {
             return;
         }
@@ -174,7 +174,7 @@ public class RangeEnumerableExtensions
     public void Min_MatchesIEnumerableMin(Range range, IEnumerable<int> enumerable)
     {
         var rangeEnumerable = range.AsEnumerable();
-        if (rangeEnumerable.Count() is 0)
+        if (rangeEnumerable.Count is 0)
         {
             return;
         }

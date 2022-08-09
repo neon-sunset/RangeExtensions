@@ -33,9 +33,16 @@ foreach (var i in 100..0)
 var numbers = (0..100).ToArray();
 ```
 
-### Other IEnumerable APIs (some methods have bespoke implementations for performance)
+### `IEnumerable<int>` (some methods have bespoke implementations for performance)
 ```cs
-var firstTen = (400...720).AsEnumerable().Take(10);
+var enumerable = (..100).AsEnumerable();
+
+var sum = enumerable.Sum();
+var count = enumerable.Count();
+var average = enumerable.Average();
+var firstTen = enumerable.Take(10);
+var reversed = enumerable.Reverse();
+// and others.
 ```
 
 ## Performance
