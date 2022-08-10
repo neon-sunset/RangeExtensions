@@ -37,4 +37,25 @@ internal static class Data
         yield return new object[] { 65537..65537 };
         yield return new object[] { int.MaxValue..int.MaxValue };
     }
+
+    public static IEnumerable<int> Numbers(Range range) =>
+        new[]
+        {
+            0, 1, -1, 7, -7, 10, 1001, 178000, int.MinValue, int.MaxValue,
+            range.Start.Value, range.Start.Value + 1, range.Start.Value - 1,
+            range.End.Value, range.End.Value + 1, range.End.Value - 1
+        };
+
+    public static IEnumerable<int> Indexes(ICollection<int> collection)
+    {
+        yield return 0;
+        yield return Math.Min(collection.Count, 1);
+        yield return collection.Count / 3;
+        yield return collection.Count / 2;
+        yield return Math.Max(collection.Count - 1, 0);
+        yield return collection.Count;
+        yield return collection.Count + 1;
+        yield return int.MinValue;
+        yield return int.MaxValue;
+    }
 }

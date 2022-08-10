@@ -28,9 +28,9 @@ internal static class ThrowHelpers
 #else
     [DoesNotReturn]
 #endif
-    public static void ArgumentOutOfRange()
+    public static void Argument()
     {
-        throw new ArgumentOutOfRangeException();
+        throw new ArgumentException();
     }
 
 #if NETSTANDARD2_0
@@ -38,9 +38,9 @@ internal static class ThrowHelpers
 #else
     [DoesNotReturn]
 #endif
-    public static void IndexOutOfRange()
+    public static void ArgumentOutOfRange()
     {
-        throw new IndexOutOfRangeException();
+        throw new ArgumentOutOfRangeException();
     }
 
 #if NETSTANDARD2_0

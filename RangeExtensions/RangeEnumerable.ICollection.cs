@@ -59,17 +59,18 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
     {
         if (index < 0 || index > array.Length)
         {
-            ThrowHelpers.IndexOutOfRange();
+            ThrowHelpers.ArgumentOutOfRange();
         }
 
-        if ((array.Length - index) < Count)
+        var count = Count;
+        if (count > (array.Length - index))
         {
-            ThrowHelpers.ArgumentOutOfRange();
+            ThrowHelpers.Argument();
         }
 
         var enumerator = GetEnumerator();
 
-        for (var i = index; i < array.Length; i++)
+        for (var i = index; i < count; i++)
         {
             _ = enumerator.MoveNext();
 
@@ -82,18 +83,20 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
     {
         if (index < 0 || index > span.Length)
         {
-            ThrowHelpers.IndexOutOfRange();
-        }
-
-        if ((span.Length - index) < Count)
-        {
             ThrowHelpers.ArgumentOutOfRange();
         }
 
+        var count = Count;
+        if (count > (span.Length - index))
+        {
+            ThrowHelpers.Argument();
+        }
+
         var enumerator = GetEnumerator();
-        
+
         // TODO: SIMDify because why not
-        for (var i = index; i < span.Length; i++)
+        // TODO: Verify that bounds check is elided in codegen
+        for (var i = index; i < count; i++)
         {
             _ = enumerator.MoveNext();
 

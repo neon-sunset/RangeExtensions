@@ -1,6 +1,6 @@
 namespace RangeExtensions.Tests;
 
-public class RangeEnumerableTests
+public partial class RangeEnumerableTests
 {
     public static IEnumerable<object[]> ValidRangePairs() => Data.ValidRangePairs();
     public static IEnumerable<object[]> InvalidRanges() => Data.InvalidRanges();
@@ -10,21 +10,6 @@ public class RangeEnumerableTests
     public void RangeEnumerable_MatchesStandardEnumerableRange(Range range, IEnumerable<int> enumerable)
     {
         Assert.Equal(enumerable, range.AsEnumerable());
-    }
-
-    [Theory]
-    [MemberData(nameof(ValidRangePairs))]
-    public void AscendingRangeEnumeratorOutput_MatchesEnumerableRange(Range range, IEnumerable<int> enumerable)
-    {
-        IEnumerable<int> Enumerate()
-        {
-            foreach (var i in range)
-            {
-                yield return i;
-            }
-        }
-
-        Assert.Equal(enumerable, Enumerate());
     }
 
     [Theory]
