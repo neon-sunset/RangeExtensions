@@ -60,8 +60,6 @@ public partial class RangeEnumerableTests
         var rangeEnumerable = range.AsEnumerable();
         var numbersArray = enumerable.ToArray();
 
-        // This one is really expensive due to element count * 'ValidRangePairs' * 'Data.Indexes' cost.
-        // Using generics should somewhat help with its performance.
         static int[] CopyCollection<TCollection>(int index, TCollection collection)
             where TCollection : ICollection<int>
         {
@@ -74,7 +72,7 @@ public partial class RangeEnumerableTests
 
         foreach (var index in Data.Indexes(numbersArray))
         {
-            AssertHelpers.EqualValueOrException(
+            AssertHelpers.EqualSequenceOrException(
                 () => CopyCollection(index, numbersArray),
                 () => CopyCollection(index, rangeEnumerable));
         }

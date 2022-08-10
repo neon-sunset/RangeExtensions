@@ -36,7 +36,7 @@ internal static class AssertHelpers
         }
     }
 
-    public static void EqualValueOrException<T>(
+    public static void EqualSequenceOrException<T>(
         Func<IEnumerable<T>> expectedValueSource,
         Func<IEnumerable<T>> actualValueSource,
         bool allowInherited = false)
