@@ -74,7 +74,8 @@ public partial class RangeEnumerableTests
         {
             AssertHelpers.EqualSequenceOrException(
                 () => CopyCollection(index, numbersArray),
-                () => CopyCollection(index, rangeEnumerable));
+                () => CopyCollection(index, rangeEnumerable),
+                allowInherited: true);
         }
     }
 

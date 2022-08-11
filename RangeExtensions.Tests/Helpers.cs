@@ -24,6 +24,7 @@ internal static class AssertHelpers
             if (!allowInherited)
             {
                 Assert.Throws(exceptionType, () => expectedValueSource());
+                Assert.Throws(exceptionType, () => actualValueSource());
                 return;
             }
 
@@ -52,6 +53,7 @@ internal static class AssertHelpers
             if (!allowInherited)
             {
                 Assert.Throws(exceptionType, () => expectedValueSource());
+                Assert.Throws(exceptionType, () => actualValueSource());
                 return;
             }
 
