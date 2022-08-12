@@ -31,4 +31,18 @@ public partial class RangeEnumerableTests
 
         Assert.Equal(enumerable, EnumerateBoxed());
     }
+
+    [Theory, MemberData(nameof(ValidRangePairs))]
+    public void RangeEnumerableBoxedGeneric_MatchesStandardEnumerableRange(Range range, IEnumerable<int> enumerable)
+    {
+        IEnumerable<int> EnumerateBoxed()
+        {
+            foreach (var i in (IEnumerable<int>)range.AsEnumerable())
+            {
+                yield return i;
+            }
+        }
+
+        Assert.Equal(enumerable, EnumerateBoxed());
+    }
 }

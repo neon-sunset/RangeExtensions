@@ -221,7 +221,6 @@ public class RangeEnumerableExtensions
         Assert.Throws<OverflowException>(Sum);
     }
 
-
     [Theory]
     [MemberData(nameof(ValidRangePairs))]
     public void Take_MatchesIEnumerableTake(Range range, IEnumerable<int> enumerable)

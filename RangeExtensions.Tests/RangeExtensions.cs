@@ -53,7 +53,7 @@ public class RangeExtensionsTests
     [Fact]
     public void CopyToSpan_ThrowsOnRangeLongerThanSpan()
     {
-        void CopyToSpan()
+        static void CopyToSpan()
         {
             var span = (stackalloc int[128]);
 

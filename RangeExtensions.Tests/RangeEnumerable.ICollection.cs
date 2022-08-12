@@ -79,12 +79,47 @@ public partial class RangeEnumerableTests
         }
     }
 
+#if !NET48
+    [Theory, MemberData(nameof(ValidRangePairs))]
+    public void CopyToSpan_MatchesICollectionCopyTo(Range range, IEnumerable<int> enumerable)
+    {
+        var numbersArray = enumerable.ToArray();
+
+        static int[] CopyCollection<TCollection>(int index, TCollection collection)
+            where TCollection : ICollection<int>
+        {
+            var numbers = new int[collection.Count];
+
+            collection.CopyTo(numbers, index);
+
+            return numbers;
+        }
+
+        static int[] CopySpan(int index, RangeEnumerable rangeCollection)
+        {
+            var numbers = new int[rangeCollection.Count];
+
+            rangeCollection.CopyTo(numbers.AsSpan(), index);
+
+            return numbers;
+        }
+
+        foreach (var index in Data.Indexes(numbersArray))
+        {
+            AssertHelpers.EqualSequenceOrException(
+                () => CopyCollection(index, numbersArray),
+                () => CopySpan(index, range),
+                allowInherited: true);
+        }
+    }
+#endif
+
     [Fact]
     public void Remove_ThrowsNotSupportedException()
     {
         static void Remove()
         {
-            (..100).AsEnumerable().Remove(10);
+            _ = (..100).AsEnumerable().Remove(10);
         }
 
         Assert.Throws<NotSupportedException>(Remove);
