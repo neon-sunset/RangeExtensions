@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Authors>neon-sunset</Authors>
@@ -6,7 +6,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>Range;Extensions;LINQ;IEnumerable;foreach;RangeForEach</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Description>Extensions for Range type to support 'foreach' and 'RangeEnumerable' that implements 'IEnumerable'.</Description>
+    <Description>Extensions for Range that add foreach and ICollection/IEnumerable support.</Description>
   </PropertyGroup>
 
   <PropertyGroup>

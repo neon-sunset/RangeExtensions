@@ -1,14 +1,14 @@
 # RangeExtensions
 [![CI/CD](https://github.com/neon-sunset/RangeExtensions/actions/workflows/dotnet-releaser.yml/badge.svg)](https://github.com/neon-sunset/RangeExtensions/actions/workflows/dotnet-releaser.yml) [![nuget](https://badgen.net/nuget/v/RangeExtensions/latest)](https://www.nuget.org/packages/RangeExtensions/) [![Coverage Status](https://coveralls.io/repos/github/neon-sunset/RangeExtensions/badge.svg)](https://coveralls.io/github/neon-sunset/RangeExtensions)
 
-Extensions for Range type to support `foreach` and `RangeEnumerable` that implements `IEnumerable<int>`.
-- Correctness is verified against standard `IEnumerable<int>` and `Enumerable.Range` behavior
-- Performance is hand tuned to produce efficient native code with no allocations as long as `RangeEnumerable` isn't boxed into `IEnumerable<int>` (same applies to enumerator)
+This package allows you to use `0..100` in `foreach` expressions and implements `RangeEnumerable` that supports a variety of LINQ-like operations as well as `ICollection<int>` and `IEnumerable<int>`.
+- Correctness is verified against standard `IEnumerable<int>` and `Enumerable.Range` behavior;
+- Performance is hand tuned to produce efficient native code with no allocations as long as `RangeEnumerable` isn't boxed (same applies to enumerator). However, even when boxed it is still faster than `Enumerable.Range`.
 
 ## Features
 ### Range enumeration
 ```cs
-foreach (var i in 0..100)
+foreach (var i in ..100) // you can write 0..Length as just ..Length
 {
     Console.WriteLine(i);
 }

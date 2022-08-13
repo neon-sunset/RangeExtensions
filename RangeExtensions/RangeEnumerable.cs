@@ -41,6 +41,7 @@ public readonly partial record struct RangeEnumerable
     {
         private readonly int _shift;
         private readonly int _end;
+
         private int _current;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
