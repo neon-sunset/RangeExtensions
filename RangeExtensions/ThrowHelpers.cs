@@ -60,6 +60,6 @@ internal static class ThrowHelpers
 #endif
     private static void EmptyRange()
     {
-        throw new InvalidOperationException("Range constains no elements.");
+        throw new InvalidOperationException("Range contains no elements.");
     }
 }
