@@ -87,6 +87,12 @@ public static class RangeEnumerableExtensions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static SelectEnumerable<T> Select<T>(this RangeEnumerable enumerable, Func<int, T> selector)
+    {
+        return new SelectEnumerable<T>(selector, enumerable);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RangeEnumerable Skip(this RangeEnumerable enumerable, int count)
     {
         if (count >= enumerable.Count)

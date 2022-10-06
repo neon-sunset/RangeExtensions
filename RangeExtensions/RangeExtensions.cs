@@ -9,6 +9,12 @@ public static class RangeExtensions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static SelectEnumerable<T> Select<T>(this Range range, Func<int, T> selector)
+    {
+        return range.AsEnumerable().Select(selector);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int[] ToArray(this Range range)
     {
         return range.AsEnumerable().ToArray();

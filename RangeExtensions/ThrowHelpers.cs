@@ -23,6 +23,15 @@ internal static class ThrowHelpers
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CheckNull<T>(T value) where T : class
+    {
+        if (value is null)
+        {
+            ArgumentNull();
+        }
+    }
+
 #if NETSTANDARD2_0
     [MethodImpl(MethodImplOptions.NoInlining)]
 #else
@@ -31,6 +40,16 @@ internal static class ThrowHelpers
     public static void Argument()
     {
         throw new ArgumentException();
+    }
+
+    #if NETSTANDARD2_0
+    [MethodImpl(MethodImplOptions.NoInlining)]
+#else
+    [DoesNotReturn]
+#endif
+    public static void ArgumentNull()
+    {
+        throw new ArgumentNullException();
     }
 
 #if NETSTANDARD2_0
