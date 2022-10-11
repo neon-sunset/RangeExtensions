@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <Authors>neon-sunset</Authors>
-    <RepositoryUrl>https://github.com/neon-sunset/RangeExtensions</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/neon-sunset/RangeExtensions</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/neon-sunset/RangeExtensions</PackageProjectUrl>
     <PackageTags>Range;Extensions;LINQ;IEnumerable;foreach;RangeForEach</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Extensions for Range that add foreach and ICollection/IEnumerable support.</Description>
