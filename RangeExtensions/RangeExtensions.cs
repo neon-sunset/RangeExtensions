@@ -5,21 +5,13 @@ public static class RangeExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RangeEnumerable AsEnumerable(this Range range)
     {
-        var (start, end) = UnwrapUnchecked(range);
-
-        ThrowHelpers.CheckInvalid(start, end);
-
-        return new(start, end);
+        return range;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RangeEnumerable.Enumerator GetEnumerator(this Range range)
     {
-        var (start, end) = UnwrapUnchecked(range);
-
-        ThrowHelpers.CheckInvalid(start, end);
-
-        return new(start, end);
+        return range.AsEnumerable().GetEnumerator();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -1,14 +1,16 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace RangeExtensions.Benchmarks;
 
 // [ShortRunJob(RuntimeMoniker.Net48)]
 [ShortRunJob]
+[ShortRunJob(RuntimeMoniker.Net60)]
 [MemoryDiagnoser]
-// [DisassemblyDiagnoser(maxDepth: 2, exportCombinedDisassemblyReport: true)]
+[DisassemblyDiagnoser(maxDepth: 2, exportCombinedDisassemblyReport: true)]
 public class ForEach
 {
-    [Params(10, 100, 100_000)]
+    [Params(10, 100)]
     public int Length;
 
     [Benchmark(Baseline = true)]
@@ -27,7 +29,7 @@ public class ForEach
     public int Range()
     {
         var ret = 0;
-        foreach (var i in ..Length)
+        foreach (var i in 0..Length)
         {
             ret += i;
         }

@@ -75,7 +75,7 @@ internal static class ThrowHelpers
 #else
     [DoesNotReturn]
 #endif
-    private static void InvalidRange(int start, int end)
+    public static void InvalidRange(int start, int end)
     {
         throw new ArgumentOutOfRangeException(nameof(Range), start..end, "Cannot enumerate numbers in range with a head or tail indexed from end.");
     }

@@ -1,9 +1,7 @@
 using System.Collections;
-using System.Runtime.InteropServices;
 
 namespace System.Linq;
 
-[StructLayout(LayoutKind.Auto)]
 public readonly partial record struct RangeEnumerable
 {
     private readonly int _start;
@@ -16,7 +14,15 @@ public readonly partial record struct RangeEnumerable
     {
         var (start, end) = range.UnwrapUnchecked();
 
+// Sadly we need this to both avoid codegen regressions pre-net8.0 and comply with tests on netstandard
+#if NETCOREAPP3_1 || NET6_0_OR_GREATER
         ThrowHelpers.CheckInvalid(start, end);
+#else
+        if (range.Start.IsFromEnd || range.End.IsFromEnd)
+        {
+            ThrowHelpers.InvalidRange(start, end);
+        }
+#endif
 
         _start = start;
         _end = end;
@@ -38,10 +44,9 @@ public readonly partial record struct RangeEnumerable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private Enumerator GetEnumeratorUnchecked()
     {
-        return new Enumerator(_start, _end);
+        return new(_start, _end);
     }
 
-    [StructLayout(LayoutKind.Auto)]
     public record struct Enumerator : IEnumerator<int>
     {
         private readonly int _shift;
