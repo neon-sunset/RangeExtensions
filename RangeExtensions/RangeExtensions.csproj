@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>neon-sunset</Authors>
     <RepositoryUrl>https://github.com/neon-sunset/RangeExtensions</RepositoryUrl>
-	<PackageProjectUrl>https://github.com/neon-sunset/RangeExtensions</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/neon-sunset/RangeExtensions</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>Range;System.Range;Extensions;LINQ;IEnumerable;foreach;RangeForEach</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
