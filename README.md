@@ -1,9 +1,9 @@
 # RangeExtensions
 [![CI/CD](https://github.com/neon-sunset/RangeExtensions/actions/workflows/dotnet-releaser.yml/badge.svg)](https://github.com/neon-sunset/RangeExtensions/actions/workflows/dotnet-releaser.yml) [![nuget](https://badgen.net/nuget/v/RangeExtensions/latest)](https://www.nuget.org/packages/RangeExtensions/) [![Coverage Status](https://coveralls.io/repos/github/neon-sunset/RangeExtensions/badge.svg)](https://coveralls.io/github/neon-sunset/RangeExtensions)
 
-This package allows you to use `0..100` in `foreach` expressions and implements `RangeEnumerable` that supports a variety of LINQ-like operations as well as `ICollection<int>` and `IEnumerable<int>`.
+This package enables the usage of `System.Range` in `foreach` expressions and provides specialized implementations to facilitate the usage of `Range`s with LINQ.
 - Correctness is verified against standard `IEnumerable<int>` and `Enumerable.Range` behavior;
-- Performance is hand tuned to produce efficient native code with no allocations as long as `RangeEnumerable` isn't boxed (same applies to enumerator). However, even when boxed it is still faster than `Enumerable.Range`.
+- The library tries its best to make the abstractions either zero-cost or near zero-cost. For critical paths, performance is hand tuned to be allocation-free and on par with regular `for` loops
 
 ## Features
 ### Range enumeration
@@ -33,7 +33,13 @@ foreach (var i in 100..0)
 var numbers = (0..100).ToArray();
 ```
 
-### `IEnumerable<int>` (some methods have bespoke implementations for performance)
+### Select and Where
+```cs
+var floats = (0..100).Select(i => (float)i);
+var even = (0..100).Where(i => i % 2 == 0);
+```
+
+### Specialized implementations
 ```cs
 var enumerable = (..100).AsEnumerable();
 
@@ -42,7 +48,7 @@ var count = enumerable.Count();
 var average = enumerable.Average();
 var firstTen = enumerable.Take(10);
 var reversed = enumerable.Reverse();
-// and others.
+// and others
 ```
 
 ## Performance

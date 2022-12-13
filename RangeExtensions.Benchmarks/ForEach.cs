@@ -1,13 +1,11 @@
-using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
 
 namespace RangeExtensions.Benchmarks;
 
 // [ShortRunJob(RuntimeMoniker.Net48)]
 [ShortRunJob]
 [MemoryDiagnoser]
-// [DisassemblyDiagnoser(maxDepth: 5, exportCombinedDisassemblyReport: true)]
+// [DisassemblyDiagnoser(maxDepth: 2, exportCombinedDisassemblyReport: true)]
 public class ForEach
 {
     [Params(10, 100, 100_000)]
@@ -53,7 +51,7 @@ public class ForEach
     public int RangeSelect()
     {
         var ret = 0;
-        foreach (var i in (..Length).Select(static i => i * 2))
+        foreach (var i in (..Length).Select(i => i))
         {
             ret += i;
         }
@@ -65,7 +63,7 @@ public class ForEach
     public int EnumerableSelect()
     {
         var ret = 0;
-        foreach (var i in Enumerable.Range(0, Length).Select(i => i * 2))
+        foreach (var i in Enumerable.Range(0, Length).Select(i => i))
         {
             ret += i;
         }

@@ -8,8 +8,8 @@ namespace RangeExtensions.Benchmarks;
 [DisassemblyDiagnoser(maxDepth: 5, exportCombinedDisassemblyReport: true)]
 public class EnumerableExtras
 {
-    [Params(1, 10, 100, 10000)]
-    public int Length;
+    // [Params(1, 10, 100, 10000)]
+    public const int Length = 1000;
 
     [Benchmark] public bool RangeAny() => Range(Length).Any();
 

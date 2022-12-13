@@ -7,12 +7,9 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
         {
-            var start = Range.Start.Value;
-            var end = Range.End.Value;
-
-            return start < end
-                ? end - start
-                : start - end;
+            return _start < _end
+                ? _end - _start
+                : _start - _end;
         }
     }
 
@@ -50,7 +47,7 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
             return false;
         }
 
-        var (min, max) = this.MinAndMaxUnchecked();
+        var (min, max) = MinAndMaxUnchecked();
 
         return item >= min && item <= max;
     }
@@ -65,7 +62,7 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         var count = Count;
         if (count > (array.Length - index))
         {
-            ThrowHelpers.Argument();
+            ThrowHelpers.ArgumentException();
         }
 
         var enumerator = GetEnumerator();
@@ -89,7 +86,7 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         var count = Count;
         if (count > (span.Length - index))
         {
-            ThrowHelpers.Argument();
+            ThrowHelpers.ArgumentException();
         }
 
         var enumerator = GetEnumerator();

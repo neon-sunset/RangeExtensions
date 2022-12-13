@@ -3,15 +3,43 @@
 public static class RangeExtensions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RangeEnumerable.Enumerator GetEnumerator(this Range range)
+    public static RangeEnumerable AsEnumerable(this Range range)
     {
-        return new RangeEnumerable.Enumerator(range);
+        var (start, end) = UnwrapUnchecked(range);
+
+        ThrowHelpers.CheckInvalid(start, end);
+
+        return new(start, end);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static SelectEnumerable<T> Select<T>(this Range range, Func<int, T> selector)
+    public static RangeEnumerable.Enumerator GetEnumerator(this Range range)
+    {
+        var (start, end) = UnwrapUnchecked(range);
+
+        ThrowHelpers.CheckInvalid(start, end);
+
+        return new(start, end);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static RangeEnumerable.Enumerator GetEnumeratorUnchecked(this Range range)
+    {
+        var (start, end) = UnwrapUnchecked(range);
+
+        return new(start, end);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static SelectRange<T> Select<T>(this Range range, Func<int, T> selector)
     {
         return range.AsEnumerable().Select(selector);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static WhereRange Where(this Range range, Func<int, bool> predicate)
+    {
+        return range.AsEnumerable().Where(predicate);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -44,14 +72,22 @@ public static class RangeExtensions
             enumerable.CopyTo(destination, 0);
             result = true;
         }
-        
+
         return result;
     }
 #endif
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static (int, int) GetStartAndEnd(this Range range)
+    internal static (int, int) UnwrapUnchecked(this Range range)
     {
-        return (range.Start.Value, range.End.Value);
+        var (start, end) = (range.Start, range.End);
+
+#if NETCOREAPP3_1 || NET6_0_OR_GREATER
+        return (
+            Unsafe.As<Index, int>(ref start),
+            Unsafe.As<Index, int>(ref end));
+#else
+        return (start.Value, end.Value);
+#endif
     }
 }

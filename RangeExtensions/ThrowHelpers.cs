@@ -3,20 +3,28 @@ namespace RangeExtensions;
 internal static class ThrowHelpers
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void CheckInvalid(Range range)
+    public static void CheckInvalid(int start, int end)
     {
-        if (range.Start.IsFromEnd || range.End.IsFromEnd)
+        if (start < 0 || end < 0)
         {
-            InvalidRange(range);
+            InvalidRange(start, end);
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CheckEmpty(RangeEnumerable enumerable)
     {
-        var start = enumerable.Range.Start.Value;
-        var end = enumerable.Range.End.Value;
+        var (start, end) = enumerable;
+        if (start == end)
+        {
+            EmptyRange();
+        }
+    }
 
+    // TODO: Replace with generic constrant T where T : IRangeSource or similar?
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CheckEmpty(int start, int end)
+    {
         if (start == end)
         {
             EmptyRange();
@@ -37,7 +45,7 @@ internal static class ThrowHelpers
 #else
     [DoesNotReturn]
 #endif
-    public static void Argument()
+    public static void ArgumentException()
     {
         throw new ArgumentException();
     }
@@ -67,9 +75,9 @@ internal static class ThrowHelpers
 #else
     [DoesNotReturn]
 #endif
-    private static void InvalidRange(Range range)
+    private static void InvalidRange(int start, int end)
     {
-        throw new ArgumentOutOfRangeException(nameof(range), range, "Cannot enumerate numbers in range with a head or tail indexed from end.");
+        throw new ArgumentOutOfRangeException(nameof(Range), start..end, "Cannot enumerate numbers in range with a head or tail indexed from end.");
     }
 
 #if NETSTANDARD2_0
@@ -79,6 +87,6 @@ internal static class ThrowHelpers
 #endif
     private static void EmptyRange()
     {
-        throw new InvalidOperationException("Range contains no elements.");
+        throw new InvalidOperationException("Sequence contains no elements");
     }
 }
