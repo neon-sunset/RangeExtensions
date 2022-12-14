@@ -15,11 +15,16 @@ public static class RangeExtensions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RangeEnumerable.Enumerator GetEnumeratorUnchecked(this Range range)
+    public static int Aggregate(this Range range, Func<int, int, int> func)
     {
-        var (start, end) = UnwrapUnchecked(range);
+        return range.AsEnumerable().Aggregate(func);
+    }
 
-        return new(start, end);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TAccumulate Aggregate<TAccumulate>(
+        this Range range, TAccumulate seed, Func<TAccumulate, int, TAccumulate> func)
+    {
+        return range.AsEnumerable().Aggregate(seed, func);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -5,12 +5,14 @@ namespace RangeExtensions.Benchmarks;
 
 // [ShortRunJob(RuntimeMoniker.Net48)]
 [ShortRunJob]
-[ShortRunJob(RuntimeMoniker.Net60)]
+// [ShortRunJob(RuntimeMoniker.Net70)]
+// [ShortRunJob(RuntimeMoniker.Net60)]
 [MemoryDiagnoser]
-[DisassemblyDiagnoser(maxDepth: 2, exportCombinedDisassemblyReport: true)]
+[HideColumns("StdDev", "Gen0", "Alloc Ratio")]
+// [DisassemblyDiagnoser(maxDepth: 2, exportCombinedDisassemblyReport: true)]
 public class ForEach
 {
-    [Params(10, 100)]
+    [Params(1, 100, 100_000)]
     public int Length;
 
     [Benchmark(Baseline = true)]
@@ -53,7 +55,7 @@ public class ForEach
     public int RangeSelect()
     {
         var ret = 0;
-        foreach (var i in (..Length).Select(i => i))
+        foreach (var i in (..Length).Select(i => i * 2))
         {
             ret += i;
         }
@@ -65,7 +67,7 @@ public class ForEach
     public int EnumerableSelect()
     {
         var ret = 0;
-        foreach (var i in Enumerable.Range(0, Length).Select(i => i))
+        foreach (var i in Enumerable.Range(0, Length).Select(i => i * 2))
         {
             ret += i;
         }

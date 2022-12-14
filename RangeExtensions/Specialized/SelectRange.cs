@@ -25,12 +25,9 @@ public readonly partial record struct SelectRange<T> : ICollection<T>
     public int Count
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _start < _end
-                ? _end - _start
-                : _start - _end;
-        }
+        get => _start < _end
+            ? _end - _start
+            : _start - _end;
     }
 
     public bool IsReadOnly

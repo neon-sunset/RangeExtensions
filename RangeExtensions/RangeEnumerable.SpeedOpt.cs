@@ -2,6 +2,37 @@ namespace System.Linq;
 
 public readonly partial record struct RangeEnumerable
 {
+    public int Aggregate(Func<int, int, int> func)
+    {
+        ThrowHelpers.CheckNull(func);
+        ThrowHelpers.CheckEmpty(this);
+
+        var enumerator = GetEnumeratorUnchecked();
+        enumerator.MoveNext();
+
+        var result = enumerator.Current;
+        while (enumerator.MoveNext())
+        {
+            result = func(result, enumerator.Current);
+        }
+
+        return result;
+    }
+
+    public TAccumulate Aggregate<TAccumulate>(
+        TAccumulate seed, Func<TAccumulate, int, TAccumulate> func)
+    {
+        ThrowHelpers.CheckNull(func);
+
+        var result = seed;
+        foreach (var element in this)
+        {
+            result = func(result, element);
+        }
+
+        return result;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Any()
     {

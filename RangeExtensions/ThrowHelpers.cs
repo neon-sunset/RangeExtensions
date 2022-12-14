@@ -21,7 +21,6 @@ internal static class ThrowHelpers
         }
     }
 
-    // TODO: Replace with generic constrant T where T : IRangeSource or similar?
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CheckEmpty(int start, int end)
     {
@@ -32,7 +31,7 @@ internal static class ThrowHelpers
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void CheckNull<T>(T value) where T : class
+    public static void CheckNull<T>(T? value) where T : class
     {
         if (value is null)
         {
@@ -85,7 +84,7 @@ internal static class ThrowHelpers
 #else
     [DoesNotReturn]
 #endif
-    private static void EmptyRange()
+    public static void EmptyRange()
     {
         throw new InvalidOperationException("Sequence contains no elements");
     }

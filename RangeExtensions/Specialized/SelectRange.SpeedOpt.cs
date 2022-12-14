@@ -2,6 +2,37 @@ namespace RangeExtensions;
 
 public readonly partial record struct SelectRange<T>
 {
+    public T Aggregate(Func<T, T, T> func)
+    {
+        ThrowHelpers.CheckNull(func);
+        ThrowHelpers.CheckEmpty(_start, _end);
+
+        var enumerator = GetEnumerator();
+        enumerator.MoveNext();
+
+        var result = enumerator.Current;
+        while (enumerator.MoveNext())
+        {
+            result = func(result, enumerator.Current);
+        }
+
+        return result;
+    }
+
+    public TAccumulate Aggregate<TAccumulate>(
+        TAccumulate seed, Func<TAccumulate, T, TAccumulate> func)
+    {
+        ThrowHelpers.CheckNull(func);
+
+        var result = seed;
+        foreach (var element in this)
+        {
+            result = func(result, element);
+        }
+
+        return result;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Any()
     {
@@ -78,6 +109,17 @@ public readonly partial record struct SelectRange<T>
     public SelectRange<T> Reverse()
     {
         return new(_selector, start: _end, end: _start);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public SelectRange<TResult> Select<TResult>(Func<T, TResult> selector)
+    {
+        ThrowHelpers.CheckNull(selector);
+
+        var inner = _selector;
+        TResult Outer(int i) => selector(inner(i));
+
+        return new(Outer, _start, _end);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
