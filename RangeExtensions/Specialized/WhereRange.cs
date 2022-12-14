@@ -66,10 +66,12 @@ public readonly partial record struct WhereRange : IEnumerable<int>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            while ((_current += _shift) != _end)
+            var current = _current;
+            while ((current += _shift) != _end)
             {
                 if (_predicate(_current))
                 {
+                    _current = current;
                     return true;
                 }
             }

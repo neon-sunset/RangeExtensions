@@ -1,10 +1,10 @@
 # RangeExtensions
 [![CI/CD](https://github.com/neon-sunset/RangeExtensions/actions/workflows/dotnet-releaser.yml/badge.svg)](https://github.com/neon-sunset/RangeExtensions/actions/workflows/dotnet-releaser.yml) [![nuget](https://badgen.net/nuget/v/RangeExtensions/latest)](https://www.nuget.org/packages/RangeExtensions/) [![Coverage Status](https://coveralls.io/repos/github/neon-sunset/RangeExtensions/badge.svg)](https://coveralls.io/github/neon-sunset/RangeExtensions)
 
-This package enables the usage of `System.Range` in `foreach` expressions and provides optimized extensions to integrate `Range` with LINQ.
+This package enables the usage of `System.Range` in `foreach` expressions and provides optimized extensions to integrate it with LINQ.
 
 - Correctness is verified against standard `IEnumerable<int>` and `Enumerable.Range` behavior;
-- The library tries its best to make the abstractions either zero-cost or near zero-cost. For critical paths, performance is hand tuned to be allocation-free and on par with regular `for` loops
+- The library tries its best to make abstractions either zero-cost or near zero-cost. For critical paths, performance is tuned to be allocation-free and on par with regular `for` loops
 
 ## Features
 ### Range enumeration
