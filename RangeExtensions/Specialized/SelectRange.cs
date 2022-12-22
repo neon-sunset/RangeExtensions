@@ -4,10 +4,9 @@ using System.Runtime.InteropServices;
 namespace RangeExtensions;
 
 [StructLayout(LayoutKind.Auto)]
-public readonly partial record struct SelectRange<T> : ICollection<T>
+public readonly partial record struct SelectRange<T> : IList<T>
 {
     private readonly Func<int, T> _selector;
-
     private readonly int _start;
     private readonly int _end;
 
@@ -36,24 +35,11 @@ public readonly partial record struct SelectRange<T> : ICollection<T>
         get => true;
     }
 
-#if NETSTANDARD2_0
-    [MethodImpl(MethodImplOptions.NoInlining)]
-#else
-    [DoesNotReturn]
-#endif
-    public void Add(T item)
+    public T this[int index]
     {
-        throw new NotSupportedException();
-    }
-
-#if NETSTANDARD2_0
-    [MethodImpl(MethodImplOptions.NoInlining)]
-#else
-    [DoesNotReturn]
-#endif
-    public void Clear()
-    {
-        throw new NotSupportedException();
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _selector(new RangeEnumerable(_start, _end)[index]);
+        set => throw new NotSupportedException();
     }
 
     public bool Contains(T item)
@@ -69,35 +55,41 @@ public readonly partial record struct SelectRange<T> : ICollection<T>
         return false;
     }
 
-    // TODO: Implement actual logic
-    public void CopyTo(T[] array, int arrayIndex)
+    public void CopyTo(T[] array, int index)
     {
-        if (arrayIndex > 0)
+        if (index < 0 || index > array.Length)
         {
             ThrowHelpers.ArgumentOutOfRange();
         }
 
-        if (array.Length > Count)
+        var count = Count;
+        if (count > (array.Length - index))
         {
             ThrowHelpers.ArgumentException();
         }
 
         var enumerator = new RangeEnumerable.Enumerator(_start, _end);
-        for (var i = 0; i < array.Length; i++)
+        for (var i = index; i < count; i++)
         {
             enumerator.MoveNext();
             array[i] = _selector(enumerator.Current);
         }
     }
 
-#if NETSTANDARD2_0
-    [MethodImpl(MethodImplOptions.NoInlining)]
-#else
-    [DoesNotReturn]
-#endif
-    public bool Remove(T item)
+    public int IndexOf(T item)
     {
-        throw new NotSupportedException();
+        var index = 0;
+        foreach (var i in new RangeEnumerable(_start, _end))
+        {
+            if (EqualityComparer<T>.Default.Equals(_selector(i), item))
+            {
+                return index;
+            }
+
+            index++;
+        }
+
+        return -1;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -116,7 +108,6 @@ public readonly partial record struct SelectRange<T> : ICollection<T>
     public record struct Enumerator : IEnumerator<T>
     {
         private readonly Func<int, T> _selector;
-
         private readonly int _shift;
         private readonly int _end;
 
@@ -155,16 +146,36 @@ public readonly partial record struct SelectRange<T> : ICollection<T>
 
         object? IEnumerator.Current => _selector(_current);
 
-#if NETSTANDARD2_0
-        [MethodImpl(MethodImplOptions.NoInlining)]
-#else
-        [DoesNotReturn]
-#endif
+        public void Dispose() { }
+
         public void Reset()
         {
             throw new NotSupportedException();
         }
+    }
 
-        public void Dispose() { }
+    public void Add(T item)
+    {
+        throw new NotSupportedException();
+    }
+
+    public void Clear()
+    {
+        throw new NotSupportedException();
+    }
+
+    public void Insert(int index, T item)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool Remove(T item)
+    {
+        throw new NotSupportedException();
+    }
+
+    public void RemoveAt(int index)
+    {
+        throw new NotImplementedException();
     }
 }

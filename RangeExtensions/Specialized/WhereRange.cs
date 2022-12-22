@@ -7,7 +7,6 @@ namespace RangeExtensions;
 public readonly partial record struct WhereRange : IEnumerable<int>
 {
     private readonly Func<int, bool> _predicate;
-
     private readonly int _start;
     private readonly int _end;
 
@@ -38,7 +37,6 @@ public readonly partial record struct WhereRange : IEnumerable<int>
     public record struct Enumerator : IEnumerator<int>
     {
         private readonly Func<int, bool> _predicate;
-
         private readonly int _shift;
         private readonly int _end;
 

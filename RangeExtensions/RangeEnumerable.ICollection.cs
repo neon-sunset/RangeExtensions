@@ -5,38 +5,15 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
     public int Count
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _start < _end
-                ? _end - _start
-                : _start - _end;
-        }
+        get => _start < _end
+            ? _end - _start
+            : _start - _end;
     }
 
     public bool IsReadOnly
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => true;
-    }
-
-#if NETSTANDARD2_0
-    [MethodImpl(MethodImplOptions.NoInlining)]
-#else
-    [DoesNotReturn]
-#endif
-    public void Add(int item)
-    {
-        throw new NotSupportedException();
-    }
-
-#if NETSTANDARD2_0
-    [MethodImpl(MethodImplOptions.NoInlining)]
-#else
-    [DoesNotReturn]
-#endif
-    public void Clear()
-    {
-        throw new NotSupportedException();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -102,11 +79,16 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
     }
 #endif
 
-#if NETSTANDARD2_0
-    [MethodImpl(MethodImplOptions.NoInlining)]
-#else
-    [DoesNotReturn]
-#endif
+    public void Add(int item)
+    {
+        throw new NotSupportedException();
+    }
+
+    public void Clear()
+    {
+        throw new NotSupportedException();
+    }
+
     public bool Remove(int item)
     {
         throw new NotSupportedException();

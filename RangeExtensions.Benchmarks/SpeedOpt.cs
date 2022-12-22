@@ -6,7 +6,7 @@ namespace RangeExtensions.Benchmarks;
 [MemoryDiagnoser]
 public class SpeedOpt
 {
-    [Params(10, 1000)] public int Length;
+    public const int Length = 1000;
 
     [Benchmark]
     public long RangeAggregate() => (0..Length)
@@ -20,11 +20,22 @@ public class SpeedOpt
 
     [Benchmark]
     public int RangeWhereLast() => (0..Length)
-        .Where(i => i % 17 is 0)
+        .Where(i => i % 64 is 0)
         .Last();
-    
+
     [Benchmark]
-    public int EnumerableWhereLast() => Enumerable.Range(0, Length)
-        .Where(i => i % 17 is 0)
-        .Last();
+    public int EnumerableWhereLast() => Enumerable
+        .Range(0, Length)
+        .Last(i => i % 64 is 0);
+
+    [Benchmark]
+    public long RangeElementAt() => (0..Length)
+        .Select(i => (long)i)
+        .ElementAt(Length - 16);
+
+    [Benchmark]
+    public long EnumerableElementAt() => Enumerable
+        .Range(0, Length)
+        .Select(i => (long)i)
+        .ElementAt(Length - 16);
 }

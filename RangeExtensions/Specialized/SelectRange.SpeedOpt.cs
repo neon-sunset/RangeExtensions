@@ -54,11 +54,11 @@ public readonly partial record struct SelectRange<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T? FirstOrDefault()
     {
-        return FirstOrDefault(default);
+        return FirstOrDefault(default!);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T? FirstOrDefault(T? defaultValue)
+    public T FirstOrDefault(T defaultValue)
     {
         if (_start == _end)
         {
@@ -87,11 +87,11 @@ public readonly partial record struct SelectRange<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T? LastOrDefault()
     {
-        return LastOrDefault(default);
+        return LastOrDefault(default!);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T? LastOrDefault(T? defaultValue)
+    public T LastOrDefault(T defaultValue)
     {
         if (_start == _end)
         {
@@ -111,7 +111,6 @@ public readonly partial record struct SelectRange<T>
         return new(_selector, start: _end, end: _start);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public SelectRange<TResult> Select<TResult>(Func<T, TResult> selector)
     {
         ThrowHelpers.CheckNull(selector);

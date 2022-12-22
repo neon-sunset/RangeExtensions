@@ -40,11 +40,12 @@ public readonly partial record struct WhereRange
     {
         ThrowHelpers.CheckEmpty(_start, _end);
 
+        var predicate = _predicate;
         foreach (var num in new RangeEnumerable(
             start: _start,
             end: _end))
         {
-            if (_predicate(num))
+            if (predicate(num))
             {
                 return num;
             }
@@ -65,11 +66,12 @@ public readonly partial record struct WhereRange
             return defaultValue;
         }
 
+        var predicate = _predicate;
         foreach (var num in new RangeEnumerable(
             start: _start,
             end: _end))
         {
-            if (_predicate(num))
+            if (predicate(num))
             {
                 return num;
             }
@@ -82,11 +84,12 @@ public readonly partial record struct WhereRange
     {
         ThrowHelpers.CheckEmpty(_start, _end);
 
+        var predicate = _predicate;
         foreach (var num in new RangeEnumerable(
             start: _end,
             end: _start))
         {
-            if (_predicate(num))
+            if (predicate(num))
             {
                 return num;
             }
@@ -107,11 +110,12 @@ public readonly partial record struct WhereRange
             return defaultValue;
         }
 
+        var predicate = _predicate;
         foreach (var num in new RangeEnumerable(
             start: _end,
             end: _start))
         {
-            if (_predicate(num))
+            if (predicate(num))
             {
                 return num;
             }
@@ -126,7 +130,6 @@ public readonly partial record struct WhereRange
         return new(_predicate, start: _end, end: _start);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public WhereRange Where(Func<int, bool> predicate)
     {
         ThrowHelpers.CheckNull(predicate);
