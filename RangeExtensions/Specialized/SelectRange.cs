@@ -165,7 +165,7 @@ public readonly partial record struct SelectRange<T> : IList<T>
 
     public void Insert(int index, T item)
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 
     public bool Remove(T item)
@@ -175,6 +175,6 @@ public readonly partial record struct SelectRange<T> : IList<T>
 
     public void RemoveAt(int index)
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 }

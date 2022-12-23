@@ -132,4 +132,70 @@ public partial class SelectRangeTests
 
         Assert.Equal(enumerable, EnumerateBoxed());
     }
+
+    [Fact]
+    public void EnumeratorReset_ThrowsNotSupportedException()
+    {
+        static void ResetEnumerator()
+        {
+            (0..100).Select(i => i).GetEnumerator().Reset();
+        }
+
+        Assert.Throws<NotSupportedException>(ResetEnumerator);
+    }
+
+    [Fact]
+    public void Add_ThrowsNotSupportedException()
+    {
+        static void Add()
+        {
+            (0..100).Select(i => i).Add(10);
+        }
+
+        Assert.Throws<NotSupportedException>(Add);
+    }
+
+    [Fact]
+    public void Clear_ThrowsNotSupportedException()
+    {
+        static void Clear()
+        {
+            (0..100).Select(i => i).Clear();
+        }
+
+        Assert.Throws<NotSupportedException>(Clear);
+    }
+
+    [Fact]
+    public void Insert_ThrowsNotSupportedException()
+    {
+        static void Insert()
+        {
+            (0..100).Select(i => i).Insert(10, 10);
+        }
+
+        Assert.Throws<NotSupportedException>(Insert);
+    }
+
+    [Fact]
+    public void Remove_ThrowsNotSupportedException()
+    {
+        static void Remove()
+        {
+            (0..100).Select(i => i).Remove(10);
+        }
+
+        Assert.Throws<NotSupportedException>(Remove);
+    }
+
+    [Fact]
+    public void RemoveAt_ThrowsNotSupportedException()
+    {
+        static void RemoveAt()
+        {
+            (0..100).Select(i => i).RemoveAt(10);
+        }
+
+        Assert.Throws<NotSupportedException>(RemoveAt);
+    }
 }
