@@ -27,6 +27,17 @@ public partial class RangeEnumerableTests
         }
     }
 
+    [Fact]
+    public void IndexOperator_SetThrowsNotSupportedException()
+    {
+        static void SetIndex()
+        {
+            (0..100).AsEnumerable()[10] = 10;
+        }
+
+        Assert.Throws<NotSupportedException>(SetIndex);
+    }
+
     [Theory, MemberData(nameof(ValidRangePairs))]
     public void IndexOf_MatchesIListIndexOf(Range range, IEnumerable<int> enumerable)
     {
