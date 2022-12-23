@@ -1,36 +1,21 @@
-using System.Collections;
+﻿using System.Collections;
+using System.Runtime.InteropServices;
 
-namespace System.Linq;
+namespace RangeExtensions;
 
-public readonly partial record struct RangeEnumerable
+[StructLayout(LayoutKind.Auto)]
+public readonly partial record struct WhereRange : IEnumerable<int>
 {
+    private readonly Func<int, bool> _predicate;
     private readonly int _start;
     private readonly int _end;
 
-    public static RangeEnumerable Empty => default;
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public RangeEnumerable(Range range)
+    internal WhereRange(Func<int, bool> predicate, int start, int end)
     {
-        var (start, end) = range.UnwrapUnchecked();
+        ThrowHelpers.CheckNull(predicate);
 
-// Sadly we need this to both avoid codegen regressions pre-net8.0 and comply with tests on netstandard
-#if NETCOREAPP3_1 || NET6_0_OR_GREATER
-        ThrowHelpers.CheckInvalid(start, end);
-#else
-        if (range.Start.IsFromEnd || range.End.IsFromEnd)
-        {
-            ThrowHelpers.InvalidRange(start, end);
-        }
-#endif
-
-        _start = start;
-        _end = end;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal RangeEnumerable(int start, int end)
-    {
+        _predicate = predicate;
         _start = start;
         _end = end;
     }
@@ -38,25 +23,29 @@ public readonly partial record struct RangeEnumerable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Enumerator GetEnumerator()
     {
-        return GetEnumeratorUnchecked();
+        return new(_predicate, _start, _end);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private Enumerator GetEnumeratorUnchecked()
-    {
-        return new(_start, _end);
-    }
+    IEnumerator<int> IEnumerable<int>.GetEnumerator() => GetEnumerator();
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    [StructLayout(LayoutKind.Auto)]
     public record struct Enumerator : IEnumerator<int>
     {
+        private readonly Func<int, bool> _predicate;
         private readonly int _shift;
         private readonly int _end;
 
         private int _current;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal Enumerator(int start, int end)
+        internal Enumerator(Func<int, bool> predicate, int start, int end)
         {
+            _predicate = predicate;
+
             if (start < end)
             {
                 _shift = 1;
@@ -74,7 +63,17 @@ public readonly partial record struct RangeEnumerable
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            return (_current += _shift) != _end;
+            var current = _current;
+            while ((current += _shift) != _end)
+            {
+                if (_predicate(current))
+                {
+                    _current = current;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public int Current
@@ -85,6 +84,11 @@ public readonly partial record struct RangeEnumerable
 
         object IEnumerator.Current => _current;
 
+#if NETSTANDARD2_0
+        [MethodImpl(MethodImplOptions.NoInlining)]
+#else
+        [DoesNotReturn]
+#endif
         public void Reset()
         {
             throw new NotSupportedException();
@@ -92,10 +96,4 @@ public readonly partial record struct RangeEnumerable
 
         public void Dispose() { }
     }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator RangeEnumerable(Range range) => new(range);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator Range(RangeEnumerable enumerable) => enumerable._start..enumerable._end;
 }

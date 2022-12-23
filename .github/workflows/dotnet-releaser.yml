@@ -21,6 +21,7 @@ jobs:
         dotnet-version: |
           3.1.x
           6.0.x
+          7.0.x
     - name: Build, Test, Pack, Publish
       shell: bash
       run: |
@@ -41,6 +42,7 @@ jobs:
         dotnet-version: |
           3.1.x
           6.0.x
+          7.0.x
     - name: Build, Test, Pack, Publish
       shell: pwsh
       run: |

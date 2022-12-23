@@ -3,23 +3,39 @@ namespace RangeExtensions;
 internal static class ThrowHelpers
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void CheckInvalid(Range range)
+    public static void CheckInvalid(int start, int end)
     {
-        if (range.Start.IsFromEnd || range.End.IsFromEnd)
+        if (start < 0 || end < 0)
         {
-            InvalidRange(range);
+            InvalidRange(start, end);
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CheckEmpty(RangeEnumerable enumerable)
     {
-        var start = enumerable.Range.Start.Value;
-        var end = enumerable.Range.End.Value;
-
+        var (start, end) = enumerable;
         if (start == end)
         {
             EmptyRange();
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CheckEmpty(int start, int end)
+    {
+        if (start == end)
+        {
+            EmptyRange();
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CheckNull<T>(T? value) where T : class
+    {
+        if (value is null)
+        {
+            ArgumentNull();
         }
     }
 
@@ -28,9 +44,19 @@ internal static class ThrowHelpers
 #else
     [DoesNotReturn]
 #endif
-    public static void Argument()
+    public static void ArgumentException()
     {
         throw new ArgumentException();
+    }
+
+    #if NETSTANDARD2_0
+    [MethodImpl(MethodImplOptions.NoInlining)]
+#else
+    [DoesNotReturn]
+#endif
+    public static void ArgumentNull()
+    {
+        throw new ArgumentNullException();
     }
 
 #if NETSTANDARD2_0
@@ -48,9 +74,9 @@ internal static class ThrowHelpers
 #else
     [DoesNotReturn]
 #endif
-    private static void InvalidRange(Range range)
+    public static void InvalidRange(int start, int end)
     {
-        throw new ArgumentOutOfRangeException(nameof(range), range, "Cannot enumerate numbers in range with a head or tail indexed from end.");
+        throw new ArgumentOutOfRangeException(nameof(Range), start..end, "Cannot enumerate numbers in range with a head or tail indexed from end.");
     }
 
 #if NETSTANDARD2_0
@@ -58,8 +84,8 @@ internal static class ThrowHelpers
 #else
     [DoesNotReturn]
 #endif
-    private static void EmptyRange()
+    public static void EmptyRange()
     {
-        throw new InvalidOperationException("Range contains no elements.");
+        throw new InvalidOperationException("Sequence contains no elements");
     }
 }

@@ -63,7 +63,7 @@ public partial class RangeEnumerableTests
     }
 
     [Theory, MemberData(nameof(InvalidRanges))]
-    public void RangeEnumerable_ImplicitConverstionFromRange_ThrowsOnInvalidRange(Range range)
+    public void RangeEnumerable_ImplicitConversionFromRange_ThrowsOnInvalidRange(Range range)
     {
         void ToRangeEnumerable()
         {

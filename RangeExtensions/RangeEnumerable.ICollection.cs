@@ -5,41 +5,15 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
     public int Count
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            var start = Range.Start.Value;
-            var end = Range.End.Value;
-
-            return start < end
-                ? end - start
-                : start - end;
-        }
+        get => _start < _end
+            ? _end - _start
+            : _start - _end;
     }
 
     public bool IsReadOnly
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => true;
-    }
-
-#if NETSTANDARD2_0
-    [MethodImpl(MethodImplOptions.NoInlining)]
-#else
-    [DoesNotReturn]
-#endif
-    public void Add(int item)
-    {
-        throw new NotSupportedException();
-    }
-
-#if NETSTANDARD2_0
-    [MethodImpl(MethodImplOptions.NoInlining)]
-#else
-    [DoesNotReturn]
-#endif
-    public void Clear()
-    {
-        throw new NotSupportedException();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -50,7 +24,7 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
             return false;
         }
 
-        var (min, max) = this.MinAndMaxUnchecked();
+        var (min, max) = MinAndMaxUnchecked();
 
         return item >= min && item <= max;
     }
@@ -65,7 +39,7 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         var count = Count;
         if (count > (array.Length - index))
         {
-            ThrowHelpers.Argument();
+            ThrowHelpers.ArgumentException();
         }
 
         var enumerator = GetEnumerator();
@@ -89,7 +63,7 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         var count = Count;
         if (count > (span.Length - index))
         {
-            ThrowHelpers.Argument();
+            ThrowHelpers.ArgumentException();
         }
 
         var enumerator = GetEnumerator();
@@ -105,11 +79,16 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
     }
 #endif
 
-#if NETSTANDARD2_0
-    [MethodImpl(MethodImplOptions.NoInlining)]
-#else
-    [DoesNotReturn]
-#endif
+    public void Add(int item)
+    {
+        throw new NotSupportedException();
+    }
+
+    public void Clear()
+    {
+        throw new NotSupportedException();
+    }
+
     public bool Remove(int item)
     {
         throw new NotSupportedException();

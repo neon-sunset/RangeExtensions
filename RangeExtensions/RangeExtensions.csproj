@@ -2,23 +2,21 @@
 
   <PropertyGroup>
     <Authors>neon-sunset</Authors>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/neon-sunset/RangeExtensions</RepositoryUrl>
     <PackageProjectUrl>https://github.com/neon-sunset/RangeExtensions</PackageProjectUrl>
-    <PackageTags>Range;Extensions;LINQ;IEnumerable;foreach;RangeForEach</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>Range;System.Range;Extensions;LINQ;IEnumerable;foreach;RangeForEach</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Description>Extensions for Range that add foreach and ICollection/IEnumerable support.</Description>
+    <Description>A set of optimized extensions which integrate System.Range with foreach and LINQ.</Description>
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net6.0</TargetFrameworks>
-    <LangVersion>10</LangVersion>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
+    <LangVersion>11</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>nullable</WarningsAsErrors>
     <IsTrimmable>true</IsTrimmable>
-    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
   <ItemGroup>
