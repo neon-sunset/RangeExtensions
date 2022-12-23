@@ -12,6 +12,17 @@ public partial class SelectRangeTests
             () => range.Select(i => i).Aggregate((acc, i) => acc + i));
     }
 
+    [Fact]
+    public static void Aggregate_ThrowsOnNullDelegate()
+    {
+        static void AggregateNull()
+        {
+            _ = (0..100).Select(i => i).Aggregate(null!);
+        }
+
+        Assert.Throws<ArgumentNullException>(AggregateNull);
+    }
+
     [Theory, MemberData(nameof(ValidRangePairs))]
     public static void AggregateWithSeed_MatchesIEnumerableAggregateWithSeed(Range range, IEnumerable<int> enumerable)
     {
@@ -21,6 +32,17 @@ public partial class SelectRangeTests
         var actual = range.Select(i => i).Aggregate(seed, (acc, i) => acc + i);
 
         Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public static void AggregateWithSeed_ThrowsOnNullDelegate()
+    {
+        static void AggregateNull()
+        {
+            _ = (0..100).Select(i => i).Aggregate(34, (Func<long, int, long>)null!);
+        }
+
+        Assert.Throws<ArgumentNullException>(AggregateNull);
     }
 
     [Theory, MemberData(nameof(ValidRangePairs))]
@@ -113,6 +135,33 @@ public partial class SelectRangeTests
         var actual = range.Select(i => i).Reverse();
 
         Assert.Equal(expected, actual);
+    }
+
+    [Theory, MemberData(nameof(ValidRangePairs))]
+    public void SelectTwice_MatchesIEnumerableSelectTwice(Range range, IEnumerable<int> enumerable)
+    {
+        var expected = enumerable
+            .Select(i => (long)i)
+            .Select(i => i * 2);
+
+        var actual = range
+            .Select(i => (long)i)
+            .Select(i => i * 2);
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void SelectTwice_ThrowsOnNullSelector()
+    {
+        static void SelectNull()
+        {
+            _ = (0..100)
+                .Select(i => i)
+                .Select((Func<int, long>)null!);
+        }
+
+        Assert.Throws<ArgumentNullException>(SelectNull);
     }
 
     [Theory, MemberData(nameof(ValidRangePairs))]
