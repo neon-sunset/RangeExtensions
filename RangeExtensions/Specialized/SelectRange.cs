@@ -16,7 +16,6 @@ public readonly partial record struct SelectRange<T> : IList<T>
         ThrowHelpers.CheckNull(selector);
 
         _selector = selector;
-
         _start = start;
         _end = end;
     }

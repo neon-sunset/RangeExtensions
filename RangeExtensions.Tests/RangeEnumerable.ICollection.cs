@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RangeExtensions.Tests;
+﻿namespace RangeExtensions.Tests;
 
 public partial class RangeEnumerableTests
 {

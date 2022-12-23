@@ -1,10 +1,10 @@
 # RangeExtensions
 [![CI/CD](https://github.com/neon-sunset/RangeExtensions/actions/workflows/dotnet-releaser.yml/badge.svg)](https://github.com/neon-sunset/RangeExtensions/actions/workflows/dotnet-releaser.yml) [![nuget](https://badgen.net/nuget/v/RangeExtensions/latest)](https://www.nuget.org/packages/RangeExtensions/) [![Coverage Status](https://coveralls.io/repos/github/neon-sunset/RangeExtensions/badge.svg)](https://coveralls.io/github/neon-sunset/RangeExtensions)
 
-This package enables the usage of `System.Range` in `foreach` expressions and provides optimized extensions to integrate it with LINQ.
+This package enables the usage of `System.Range` in `foreach` expressions and provides extensions to integrate it with LINQ as a faster replacement to `Enumerable.Range`.
 
-- Correctness is verified against standard `IEnumerable<int>` and `Enumerable.Range` behavior;
-- The library tries its best to make abstractions either zero-cost or near zero-cost. For critical paths, performance is tuned to be allocation-free and on par with regular `for` loops
+- Correctness is verified against `IEnumerable<int>` and `Enumerable.Range` behavior;
+- Implementation tries its best to make abstractions either zero-cost or reasonably close to that. For critical paths, performance is tuned to be allocation-free and on par with regular `for` loops
 
 ## Features
 ### Range enumeration
@@ -31,12 +31,12 @@ foreach (var i in 100..0)
 
 ### Select and Where
 ```cs
-var floats = (0..100)
-    .Select(i => (float)i)
+var floats = (0..100).Select(i => (float)i);
+var odd = (0..100).Where(i => i % 2 != 0);
+
+var randomNumbers = (0..1000)
+    .Select(_ => Random.Shared.Next())
     .ToArray();
-
-
-var even = (0..100).Where(i => i % 2 == 0);
 ```
 
 ### Collecting to array or list
@@ -44,12 +44,21 @@ var even = (0..100).Where(i => i % 2 == 0);
 var numbers = (0..100).ToArray();
 ```
 
-### Specialized implementations
+### Aggregate
+```cs
+var digits = (0..10)
+    .Aggregate(new StringBuilder(), (sb, i) => sb.Append(i))
+    .ToString();
+
+Assert.Equal("0123456789", digits);
+```
+
+### Other LINQ specializations
 ```cs
 var enumerable = (..100).AsEnumerable();
 
 var sum = enumerable.Sum();
-var count = enumerable.Count();
+var count = enumerable.Count;
 var average = enumerable.Average();
 var firstTen = enumerable.Take(10);
 var reversed = enumerable.Reverse();
@@ -57,36 +66,48 @@ var reversed = enumerable.Reverse();
 ```
 
 ## Performance
-In short: 10x fast vs `Enumerable.Range()` and as fast as a plain `for` loop (there's small fixed overhead to check range correctness).
+Tl;Dr: In .NET 7, `foreach (var i in 0..Length)` has the same performance as `for` loop. In other scenarios, `RangeExtensions` is 2-10x faster than `Enumerable.Range` (DynamicPGO helps the latter quite a bit)
 ``` ini
-
-BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
-AMD Ryzen 7 5800X, 1 CPU, 16 logical and 8 physical cores
-.NET SDK=7.0.100-rc.1.22363.32
-  [Host]   : .NET 7.0.0 (7.0.22.36203), X64 RyuJIT
-  ShortRun : .NET 7.0.0 (7.0.22.36203), X64 RyuJIT
+BenchmarkDotNet=v0.13.2, OS=macOS 13.1 (22C65) [Darwin 22.2.0]
+Apple M1 Pro, 1 CPU, 8 logical and 8 physical cores
+.NET SDK=8.0.100-alpha.1.22620.11
+  [Host]     : .NET 7.0.1 (7.0.122.56804), Arm64 RyuJIT AdvSIMD
+  DefaultJob : .NET 7.0.1 (7.0.122.56804), Arm64 RyuJIT AdvSIMD
 
 Job=ShortRun  IterationCount=3  LaunchCount=1  
-WarmupCount=3  
+WarmupCount=3
 
+DOTNET_TieredPGO=1
+DOTNET_ReadyToRun=0
 ```
-|            Method |   Length |             Mean |          Error |        StdDev | Ratio | RatioSD | Code Size |  Gen 0 | Allocated |
-|------------------ |--------- |-----------------:|---------------:|--------------:|------:|--------:|----------:|-------:|----------:|
-|               **For** |      **100** |         **23.94 ns** |       **0.556 ns** |      **0.030 ns** |  **1.00** |    **0.00** |      **20 B** |      **-** |         **-** |
-|             Range |      100 |         24.91 ns |       0.138 ns |      0.008 ns |  1.04 |    0.00 |      65 B |      - |         - |
-|      RangeReverse |      100 |         27.40 ns |       0.245 ns |      0.013 ns |  1.14 |    0.00 |      65 B |      - |         - |
-|  Enumerable.Range |      100 |        269.46 ns |      52.032 ns |      2.852 ns | 11.25 |    0.13 |     322 B | 0.0024 |      40 B |
-|Range.AsEnumerable |      100 |         24.92 ns |       0.522 ns |      0.029 ns |  1.04 |    0.00 |      67 B |      - |         - |
-|                   |          |                  |                |               |       |         |           |        |           |
-|               **For** |    **10000** |      **2,085.24 ns** |     **300.295 ns** |     **16.460 ns** |  **1.00** |    **0.00** |      **20 B** |      **-** |         **-** |
-|             Range |    10000 |      2,085.39 ns |     308.278 ns |     16.898 ns |  1.00 |    0.00 |      65 B |      - |         - |
-|      RangeReverse |    10000 |      2,078.58 ns |      81.149 ns |      4.448 ns |  1.00 |    0.01 |      65 B |      - |         - |
-|  Enumerable.Range |    10000 |     27,364.70 ns |     616.148 ns |     33.773 ns | 13.12 |    0.11 |     322 B |      - |      40 B |
-|Range.AsEnumerable |    10000 |      2,104.25 ns |     464.044 ns |     25.436 ns |  1.01 |    0.01 |      67 B |      - |         - |
-|                   |          |                  |                |               |       |         |           |        |           |
-|               **For** | **10000000** |  **2,086,119.92 ns** | **289,496.016 ns** | **15,868.253 ns** |  **1.00** |    **0.00** |      **20 B** |      **-** |         **-** |
-|             Range | 10000000 |  2,086,358.07 ns | 335,673.174 ns | 18,399.379 ns |  1.00 |    0.02 |      65 B |      - |         - |
-|      RangeReverse | 10000000 |  2,083,810.55 ns | 342,667.388 ns | 18,782.756 ns |  1.00 |    0.01 |      65 B |      - |         - |
-|  Enumerable.Range | 10000000 | 27,263,256.25 ns | 396,121.214 ns | 21,712.740 ns | 13.07 |    0.09 |     322 B |      - |         - |
-|Range.AsEnumerable | 10000000 |  2,075,666.41 ns |  45,777.672 ns |  2,509.229 ns |  1.00 |    0.01 |      67 B |      - |         - |
-
+|                Method | Length |            Mean |         Error | Ratio | Allocated |
+|---------------------- |------- |----------------:|--------------:|------:|----------:|
+|                   For |      1 |       0.0000 ns |     0.0000 ns |     ? |         - |
+|                 **Range** |      1 |       0.6531 ns |     0.0051 ns |     ? |         - |
+|       EnumerableRange |      1 |       8.1135 ns |     0.0198 ns |     ? |      40 B |
+|           **RangeSelect** |      1 |       1.1588 ns |     0.0048 ns |     ? |         - |
+|      EnumerableSelect |      1 |      40.7948 ns |     0.7697 ns |     ? |      88 B |
+|      **RangeSelectTwice** |      1 |      19.4165 ns |     0.0480 ns |     ? |      96 B |
+| EnumerableSelectTwice |      1 |      43.6399 ns |     0.0908 ns |     ? |     232 B |
+|            **RangeWhere** |      1 |       1.3954 ns |     0.0036 ns |     ? |         - |
+|       EnumerableWhere |      1 |      26.1945 ns |     0.0534 ns |     ? |      96 B |
+|                       |        |                 |               |       |           |
+|                   For |    100 |      36.1897 ns |     0.0618 ns |  1.00 |         - |
+|                 **Range** |    100 |      36.9244 ns |     2.0789 ns |  1.00 |         - |
+|       EnumerableRange |    100 |     211.4774 ns |     0.6430 ns |  5.85 |      40 B |
+|           **RangeSelect** |    100 |      42.6852 ns |     0.1689 ns |  1.18 |         - |
+|      EnumerableSelect |    100 |     235.7174 ns |     0.5161 ns |  6.51 |      88 B |
+|      **RangeSelectTwice** |    100 |     110.1340 ns |     0.1667 ns |  3.04 |      96 B |
+| EnumerableSelectTwice |    100 |     298.2976 ns |     2.7831 ns |  8.22 |     232 B |
+|            **RangeWhere** |    100 |      56.1455 ns |     0.1701 ns |  1.55 |         - |
+|       EnumerableWhere |    100 |     249.1264 ns |     1.5890 ns |  6.89 |      96 B |
+|                       |        |                 |               |       |           |
+|                   For | 100000 |  31,167.5682 ns |    37.3266 ns |  1.00 |         - |
+|                 **Range** | 100000 |  31,173.8688 ns |    13.0666 ns |  1.00 |         - |
+|       EnumerableRange | 100000 | 212,925.2827 ns |   156.8182 ns |  6.83 |      40 B |
+|           **RangeSelect** | 100000 |  50,086.3342 ns |    39.0657 ns |  1.61 |         - |
+|      EnumerableSelect | 100000 | 204,113.5813 ns |   100.0221 ns |  6.55 |      88 B |
+|      **RangeSelectTwice** | 100000 |  94,302.1444 ns |   230.6254 ns |  3.02 |      96 B |
+| EnumerableSelectTwice | 100000 | 203,946.9247 ns |   908.5243 ns |  6.56 |     232 B |
+|            **RangeWhere** | 100000 |  47,165.0569 ns |    36.7208 ns |  1.51 |         - |
+|       EnumerableWhere | 100000 | 209,918.1519 ns | 3,298.4418 ns |  6.76 |      96 B |

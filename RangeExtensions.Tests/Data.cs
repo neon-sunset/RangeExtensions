@@ -49,13 +49,25 @@ internal static class Data
     public static IEnumerable<int> Indexes(ICollection<int> collection)
     {
         yield return 0;
-        yield return Math.Min(collection.Count, 1);
+        yield return 1;
+        yield return 2;
+        yield return -1;
+        yield return -2;
+        yield return collection.Count / 4;
         yield return collection.Count / 3;
         yield return collection.Count / 2;
-        yield return Math.Max(collection.Count - 1, 0);
+        yield return collection.Count - 1;
         yield return collection.Count;
         yield return collection.Count + 1;
         yield return int.MinValue;
         yield return int.MaxValue;
     }
+
+    public static IEnumerable<int> ValidIndexes(ICollection<int> collection) =>
+        Indexes(collection)
+            .Where(index => index >= 0 && index < collection.Count);
+
+    public static IEnumerable<int> InvalidIndexes(ICollection<int> collection) =>
+        Indexes(collection)
+            .Where(index => index < 0 || index >= collection.Count);
 }

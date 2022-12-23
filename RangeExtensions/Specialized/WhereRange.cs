@@ -16,7 +16,6 @@ public readonly partial record struct WhereRange : IEnumerable<int>
         ThrowHelpers.CheckNull(predicate);
 
         _predicate = predicate;
-
         _start = start;
         _end = end;
     }
@@ -67,7 +66,7 @@ public readonly partial record struct WhereRange : IEnumerable<int>
             var current = _current;
             while ((current += _shift) != _end)
             {
-                if (_predicate(_current))
+                if (_predicate(current))
                 {
                     _current = current;
                     return true;

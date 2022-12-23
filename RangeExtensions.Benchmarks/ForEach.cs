@@ -1,12 +1,7 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
 
 namespace RangeExtensions.Benchmarks;
 
-// [ShortRunJob(RuntimeMoniker.Net48)]
-[ShortRunJob]
-// [ShortRunJob(RuntimeMoniker.Net70)]
-// [ShortRunJob(RuntimeMoniker.Net60)]
 [MemoryDiagnoser]
 [HideColumns("StdDev", "Gen0", "Alloc Ratio")]
 // [DisassemblyDiagnoser(maxDepth: 2, exportCombinedDisassemblyReport: true)]
@@ -68,6 +63,58 @@ public class ForEach
     {
         var ret = 0;
         foreach (var i in Enumerable.Range(0, Length).Select(i => i * 2))
+        {
+            ret += i;
+        }
+
+        return ret;
+    }
+
+    [Benchmark]
+    public int RangeSelectTwice()
+    {
+        var ret = 0;
+        foreach (var i in (..Length)
+            .Select(i => i * 2)
+            .Select(i => i * 2))
+        {
+            ret += i;
+        }
+
+        return ret;
+    }
+
+    [Benchmark]
+    public int EnumerableSelectTwice()
+    {
+        var ret = 0;
+        foreach (var i in Enumerable.Range(0, Length)
+            .Select(i => i * 2)
+            .Select(i => i * 2))
+        {
+            ret += i;
+        }
+
+        return ret;
+    }
+
+    [Benchmark]
+    public int RangeWhere()
+    {
+        var ret = 0;
+        foreach (var i in (..Length).Where(i => i % 2 is 0))
+        {
+            ret += i;
+        }
+
+        return ret;
+    }
+
+    [Benchmark]
+    public int EnumerableWhere()
+    {
+        var ret = 0;
+        foreach (var i in Enumerable.Range(0, Length).Where(i => i % 2 is 0))
         {
             ret += i;
         }

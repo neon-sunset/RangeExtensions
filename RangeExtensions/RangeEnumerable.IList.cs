@@ -7,28 +7,14 @@ public readonly partial record struct RangeEnumerable : IList<int>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
         {
-            ThrowHelpers.CheckEmpty(this);
-
-            if (_start < _end)
+            if (index < 0 || index >= Count || _start == _end)
             {
-                var result = _start + index;
-                if (result >= _end)
-                {
-                    IndexOutOfRange();
-                }
-
-                return result;
+                IndexOutOfRange();
             }
-            else
-            {
-                var result = _start - index - 1;
-                if (result < _end)
-                {
-                    IndexOutOfRange();
-                }
 
-                return result;
-            }
+            return _start < _end
+                ? _start + index
+                : _start - index - 1;
         }
         set => throw new NotSupportedException();
     }
@@ -36,16 +22,13 @@ public readonly partial record struct RangeEnumerable : IList<int>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int IndexOf(int item)
     {
-        if (_start == _end)
-        {
-            return -1;
-        }
-
+        var count = Count;
         var index = _start < _end
             ? item - _start
             : _start - 1 - item;
 
-        return Math.Max(index, -1);
+        return index >= 0 && index < count
+            ? index : -1;
     }
 
     public void Insert(int index, int item)
@@ -65,7 +48,7 @@ public readonly partial record struct RangeEnumerable : IList<int>
 #endif
     private static void IndexOutOfRange()
     {
-        throw new IndexOutOfRangeException(
+        throw new ArgumentOutOfRangeException(
             "Index was outside the bounds of the enumerable range.");
     }
 }

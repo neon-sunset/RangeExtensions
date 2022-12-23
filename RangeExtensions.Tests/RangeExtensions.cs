@@ -9,6 +9,43 @@ public class RangeExtensionsTests
     public static IEnumerable<object[]> ValidRangePairs() => Data.ValidRangePairs();
 
     [Theory, MemberData(nameof(ValidRangePairs))]
+    public static void Aggregate_MatchesIEnumerableAggregate(Range range, IEnumerable<int> enumerable)
+    {
+        AssertHelpers.EqualValueOrException(
+            () => enumerable.Aggregate((acc, i) => acc + i),
+            () => range.Aggregate((acc, i) => acc + i));
+    }
+
+    [Theory, MemberData(nameof(ValidRangePairs))]
+    public static void AggregateWithSeed_MatchesIEnumerableAggregateWithSeed(Range range, IEnumerable<int> enumerable)
+    {
+        const int seed = 34;
+
+        var expected = enumerable.Aggregate(seed, (acc, i) => acc + i);
+        var actual = range.Aggregate(seed, (acc, i) => acc + i);
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory, MemberData(nameof(ValidRangePairs))]
+    public static void Select_MatchesIEnumerableSelect(Range range, IEnumerable<int> enumerable)
+    {
+        var expected = enumerable.Select(i => $"{i * 2}");
+        var actual = range.Select(i => $"{i * 2}");
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory, MemberData(nameof(ValidRangePairs))]
+    public static void Where_MatchesIEnumerableWhere(Range range, IEnumerable<int> enumerable)
+    {
+        var expected = enumerable.Where(i => i % 7 is 0);
+        var actual = range.Where(i => i % 7 is 0);
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory, MemberData(nameof(ValidRangePairs))]
     public void ToArray_MatchesIEnumerableToArray(Range range, IEnumerable<int> enumerable)
     {
         var rangeToArray = range.ToArray();

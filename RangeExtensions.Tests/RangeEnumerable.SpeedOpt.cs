@@ -1,10 +1,9 @@
-﻿using Xunit.Sdk;
+﻿using System.Text;
 
 namespace RangeExtensions.Tests;
 
-public class RangeEnumerableExtensions
+public partial class RangeEnumerableTests
 {
-    public static IEnumerable<object[]> ValidRangePairs() => Data.ValidRangePairs();
     public static IEnumerable<object[]> EmptyRanges() => Data.EmptyRanges();
 
     [Theory]
@@ -43,16 +42,6 @@ public class RangeEnumerableExtensions
         }
 
         Assert.Throws<InvalidOperationException>(Average);
-    }
-
-    [Theory]
-    [MemberData(nameof(ValidRangePairs))]
-    public void Count_MatchesIEnumerableCount(Range range, IEnumerable<int> enumerable)
-    {
-        var rangeCount = range.AsEnumerable().Count();
-        var enumerableCount = enumerable.Count();
-
-        Assert.Equal(enumerableCount, rangeCount);
     }
 
     [Theory]
