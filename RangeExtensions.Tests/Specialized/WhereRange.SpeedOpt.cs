@@ -72,6 +72,19 @@ public partial class WhereRangeTests
     }
 
     [Theory, MemberData(nameof(ValidRangePairs))]
+    public void First_ThrowsOnNoResults(Range range, IEnumerable<int> enumerable)
+    {
+        AssertHelpers.Ignore(enumerable);
+
+        void Never()
+        {
+            range.Where(_ => false).First();
+        }
+
+        Assert.Throws<InvalidOperationException>(Never);
+    }
+
+    [Theory, MemberData(nameof(ValidRangePairs))]
     public void FirstOrDefault_MatchesIEnumerableFirstOrDefault(Range range, IEnumerable<int> enumerable)
     {
         var expected = enumerable.Where(i => i % 2 != 0);
@@ -107,6 +120,19 @@ public partial class WhereRangeTests
         }
 
         Assert.Throws<InvalidOperationException>(Last);
+    }
+
+    [Theory, MemberData(nameof(ValidRangePairs))]
+    public void Last_ThrowsOnNoResults(Range range, IEnumerable<int> enumerable)
+    {
+        AssertHelpers.Ignore(enumerable);
+
+        void Never()
+        {
+            range.Where(_ => false).Last();
+        }
+
+        Assert.Throws<InvalidOperationException>(Never);
     }
 
     [Theory, MemberData(nameof(ValidRangePairs))]

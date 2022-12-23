@@ -78,6 +78,8 @@ internal static class AssertHelpers
             return parentType.IsAssignableFrom(actualException.GetType());
         }
     }
+
+    public static void Ignore<T>(T _) { }
 }
 
 #if !NET48
