@@ -29,6 +29,10 @@ public class SpeedOpt
         .Last(i => i % 64 is 0);
 
     [Benchmark]
+    public long RangeIndex() => (0..Length)
+        .Select(i => (long)i)[Length - 16];
+
+    [Benchmark]
     public long RangeElementAt() => (0..Length)
         .Select(i => (long)i)
         .ElementAt(Length - 16);

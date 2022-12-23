@@ -36,6 +36,17 @@ public class RangeExtensionsTests
         Assert.Equal(expected, actual);
     }
 
+    [Fact]
+    public static void Select_ThrowsOnNullSelector()
+    {
+        static void SelectWithNull()
+        {
+            _ = (0..100).Select((Func<int, long>)null!);
+        }
+
+        Assert.Throws<ArgumentNullException>(SelectWithNull);
+    }
+
     [Theory, MemberData(nameof(ValidRangePairs))]
     public static void Where_MatchesIEnumerableWhere(Range range, IEnumerable<int> enumerable)
     {
@@ -43,6 +54,17 @@ public class RangeExtensionsTests
         var actual = range.Where(i => i % 7 is 0);
 
         Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public static void Where_ThrowsOnNullPredicate()
+    {
+        static void WhereWithNull()
+        {
+            _ = (0..100).Where(null!);
+        }
+
+        Assert.Throws<ArgumentNullException>(WhereWithNull);
     }
 
     [Theory, MemberData(nameof(ValidRangePairs))]
