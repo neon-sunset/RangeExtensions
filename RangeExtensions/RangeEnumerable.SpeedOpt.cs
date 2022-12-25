@@ -191,23 +191,6 @@ public readonly partial record struct RangeEnumerable
         return array;
     }
 
-    public List<int> ToList()
-    {
-        var length = Count;
-        if (length is 0)
-        {
-            return new List<int>(0);
-        }
-
-        var list = new List<int>(length);
-        foreach (var i in this)
-        {
-            list.Add(i);
-        }
-
-        return list;
-    }
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public WhereRange Where(Func<int, bool> predicate)
     {
