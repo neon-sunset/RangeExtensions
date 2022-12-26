@@ -399,6 +399,16 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/.idea
+/shelf/
+/workspace.xml
+/contentModel.xml
+/modules.xml
+/projectSettingsUpdater.xml
+/httpRequests/
+/dataSources/
+/dataSources.local.xml
+
 
 ##
 ## Visual studio for Mac
