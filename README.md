@@ -66,7 +66,7 @@ var reversed = enumerable.Reverse();
 ```
 
 ## Performance
-Tl;Dr: In .NET 7, `foreach (var i in 0..Length)` has the same performance as `for` loop. In other scenarios, `RangeExtensions` is 2-10x faster than `Enumerable.Range` (DynamicPGO helps the latter quite a bit)
+In .NET 7, `foreach (var i in 0..Length)` has the same performance as `for` loop. Otherwise, `RangeExtensions` is 2 to >10 times faster than `Enumerable.Range`. Using DynamicPGO significantly improves the performance of both.
 ``` ini
 BenchmarkDotNet=v0.13.2, OS=macOS 13.1 (22C65) [Darwin 22.2.0]
 Apple M1 Pro, 1 CPU, 8 logical and 8 physical cores
