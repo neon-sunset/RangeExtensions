@@ -138,6 +138,7 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         }
     }
 
+    // TODO: Rewrite to pure ref/pointer arithmetics and indexing
     private void InitializeSpanCore(int start, int end, Span<int> destination)
     {
         (int shift, start) = start < end
@@ -167,7 +168,7 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
 
         for (var i = destination.Length - remainder; i < destination.Length; i++)
         {
-            destination[i] = start + (i * shift);
+            Unsafe.Add(ref pos, i) = start + (i * shift);
         }
     }
 #endif
