@@ -122,7 +122,7 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         Debug.Assert(_start != _end);
         Debug.Assert(destination.Length != 0 && destination.Length <= Count);
 
-        if (destination.Length < Vector<int>.Count * 4)
+        if (destination.Length < Vector<int>.Count * 2)
         {
             // The caller *must* guarantee that destination length can fit the range
             ref var pos = ref destination[0];
