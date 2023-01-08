@@ -182,7 +182,7 @@ public readonly partial record struct RangeEnumerable
 #endif
 
 #if NETCOREAPP3_1 || NET
-        InitializeSpan(_start, _end, array);
+        InitializeSpan(array);
         return array;
 #else
         var enumerator = GetEnumeratorUnchecked();

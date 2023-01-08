@@ -88,7 +88,7 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         }
 
 #if NETCOREAPP3_1 || NET
-        InitializeSpan(_start, _end, span);
+        InitializeSpan(span);
         return;
 #else
         var enumerator = GetEnumerator();
@@ -117,12 +117,12 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
     }
 
 #if NETCOREAPP3_1 || NET
-    private void InitializeSpan(int start, int end, Span<int> destination)
+    private void InitializeSpan(Span<int> destination)
     {
-        Debug.Assert(start != end);
+        Debug.Assert(_start != _end);
         Debug.Assert(destination.Length != 0 && destination.Length <= Count);
 
-        if (destination.Length < Vector<int>.Count * 2)
+        if (destination.Length < Vector<int>.Count * 4)
         {
             // The caller *must* guarantee that destination length can fit the range
             ref var pos = ref destination[0];
@@ -134,16 +134,16 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         }
         else
         {
-            InitializeSpanCore(start, end, destination);
+            InitializeSpanCore(destination);
         }
     }
 
     // TODO: Rewrite to pure ref/pointer arithmetics and indexing
-    private void InitializeSpanCore(int start, int end, Span<int> destination)
+    private void InitializeSpanCore(Span<int> destination)
     {
-        (int shift, start) = start < end
-            ? (1, start)
-            : (-1, start - 1);
+        var (shift, start) = _start < _end
+            ? (1, _start)
+            : (-1, _start - 1);
 
         var mask = IncrementMask * shift;
         var width = Vector<int>.Count;
@@ -156,21 +156,20 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         for (var i = 0; i < destination.Length - remainder; i += stride)
         {
             var value = new Vector<int>(num) + mask;
-            num += numShift;
-
-            var value2 = new Vector<int>(num) + mask;
+            var value2 = new Vector<int>(num += numShift) + mask;
             num += numShift;
 
             Unsafe.WriteUnaligned(ref Unsafe.As<int, byte>(
                 ref Unsafe.Add(ref pos, i)), value);
-
             Unsafe.WriteUnaligned(ref Unsafe.As<int, byte>(
                 ref Unsafe.Add(ref pos, i + width)), value2);
         }
 
+        var remNum = start + (destination.Length - remainder) * shift;
         for (var i = destination.Length - remainder; i < destination.Length; i++)
         {
-            Unsafe.Add(ref pos, i) = start + (i * shift);
+            Unsafe.Add(ref pos, i) = remNum;
+            remNum += shift;
         }
     }
 #endif
