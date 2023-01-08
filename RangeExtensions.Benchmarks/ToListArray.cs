@@ -8,30 +8,24 @@ namespace RangeExtensions.Benchmarks;
 [DisassemblyDiagnoser(maxDepth: 5, exportCombinedDisassemblyReport: true)]
 public class ToListArray
 {
-    [Params(10, 1000, 1000000)]
+    [Params(10, 1000, 100000)]
     public int Length;
 
     [Benchmark(Baseline = true)]
-    public int[] RangeToArray()
-    {
-        return (0..Length).ToArray();
-    }
+    public int[] RangeToArray() => (0..Length).ToArray();
 
     [Benchmark]
-    public List<int> RangeToList()
-    {
-        return (0..Length).ToList();
-    }
+    public int[] EnumerableToArray() => Enumerable.Range(0, Length).ToArray();
 
     [Benchmark]
-    public int[] EnumerableToArray()
-    {
-        return Enumerable.Range(0, Length).ToArray();
-    }
+    public List<int> RangeToList() => (0..Length).ToList();
 
     [Benchmark]
-    public List<int> EnumerableToList()
-    {
-        return Enumerable.Range(0, Length).ToList();
-    }
+    public List<int> EnumerableToList() => Enumerable.Range(0, Length).ToList();
+
+    [Benchmark]
+    public int[] RangeSelectToArray() => (0..Length).Select(i => i).ToArray();
+
+    [Benchmark]
+    public int[] EnumerableSelectToArray() => Enumerable.Range(0, Length).Select(i => i).ToArray();
 }
