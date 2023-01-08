@@ -42,7 +42,7 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
     {
 #if !NETSTANDARD2_0
         CopyTo(array.AsSpan(), index);
-#endif
+#else
         if (index < 0 || index > array.Length)
         {
             ThrowHelpers.ArgumentOutOfRange();
@@ -65,6 +65,7 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
             array[i] = num;
             i++;
         }
+#endif
     }
 
 #if !NETSTANDARD2_0
