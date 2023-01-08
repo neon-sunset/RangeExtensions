@@ -150,20 +150,22 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         var stride = Vector<int>.Count * 2;
         var remainder = destination.Length % stride;
 
+        var num = start;
+        var numShift = shift * width;
         ref var pos = ref destination[0];
         for (var i = 0; i < destination.Length - remainder; i += stride)
         {
-            var num = start + (i * shift);
-            var num2 = start + ((i + width) * shift);
-
             var value = new Vector<int>(num) + mask;
-            var value2 = new Vector<int>(num2) + mask;
+            num += numShift;
 
-            ref var dest = ref Unsafe.Add(ref pos, i);
-            ref var dest2 = ref Unsafe.Add(ref dest, width);
+            var value2 = new Vector<int>(num) + mask;
+            num += numShift;
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<int, byte>(ref dest), value);
-            Unsafe.WriteUnaligned(ref Unsafe.As<int, byte>(ref dest2), value2);
+            Unsafe.WriteUnaligned(ref Unsafe.As<int, byte>(
+                ref Unsafe.Add(ref pos, i)), value);
+
+            Unsafe.WriteUnaligned(ref Unsafe.As<int, byte>(
+                ref Unsafe.Add(ref pos, i + width)), value2);
         }
 
         for (var i = destination.Length - remainder; i < destination.Length; i++)
