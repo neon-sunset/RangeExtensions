@@ -48,7 +48,7 @@ public static class RangeExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static List<int> ToList(this Range range)
     {
-        return range.AsEnumerable().ToList();
+        return new(range.AsEnumerable());
     }
 
 #if !NETSTANDARD2_0

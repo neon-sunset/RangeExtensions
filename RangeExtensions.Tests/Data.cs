@@ -51,11 +51,15 @@ internal static class Data
         yield return 0;
         yield return 1;
         yield return 2;
+        yield return 9;
+        yield return 19;
         yield return -1;
         yield return -2;
         yield return collection.Count / 4;
         yield return collection.Count / 3;
         yield return collection.Count / 2;
+        yield return collection.Count - 21;
+        yield return collection.Count - 11;
         yield return collection.Count - 1;
         yield return collection.Count;
         yield return collection.Count + 1;
