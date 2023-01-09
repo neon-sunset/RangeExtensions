@@ -111,3 +111,5 @@ DOTNET_ReadyToRun=0
 | EnumerableSelectTwice | 100000 | 203,946.9247 ns |   908.5243 ns |  6.56 |     232 B |
 |            **RangeWhere** | 100000 |  47,165.0569 ns |    36.7208 ns |  1.51 |         - |
 |       EnumerableWhere | 100000 | 209,918.1519 ns | 3,298.4418 ns |  6.76 |      96 B |
+
+More details on performance: [Releases](https://github.com/neon-sunset/RangeExtensions/releases) tab contains notes on improvements introduced with each version.
