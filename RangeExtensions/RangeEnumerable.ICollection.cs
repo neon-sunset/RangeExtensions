@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace System.Linq;
 
@@ -7,7 +8,7 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
 {
 #if NETCOREAPP3_1 || NET
     // Up to 512bit-wide according to upcoming AVX512 support in .NET 8
-    private static readonly Vector<int> IncrementMask = new(
+    private static readonly Vector<int> InitMask = new(
         (ReadOnlySpan<int>)new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
 #endif
 
@@ -89,7 +90,6 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
 
 #if NETCOREAPP3_1 || NET
         InitializeSpan(span);
-        return;
 #else
         var enumerator = GetEnumerator();
         for (var i = 0; i < span.Length; i++)
@@ -117,15 +117,18 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
     }
 
 #if NETCOREAPP3_1 || NET
+    /// <summary>
+    /// Contract: destination length must be greater than 0 and equal to .Count
+    /// </summary>
     private void InitializeSpan(Span<int> destination)
     {
         Debug.Assert(_start != _end);
-        Debug.Assert(destination.Length != 0 && destination.Length <= Count);
+        Debug.Assert(destination.Length != 0 && destination.Length == Count);
 
         if (destination.Length < Vector<int>.Count * 2)
         {
             // The caller *must* guarantee that destination length can fit the range
-            ref var pos = ref destination[0];
+            ref var pos = ref MemoryMarshal.GetReference(destination);
             foreach (var num in this)
             {
                 pos = num;
@@ -138,39 +141,42 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         }
     }
 
-    // TODO: Rewrite to pure ref/pointer arithmetics and indexing
     private void InitializeSpanCore(Span<int> destination)
     {
-        var (shift, start) = _start < _end
+        var (direction, start) = _start < _end
             ? (1, _start)
             : (-1, _start - 1);
 
-        var mask = IncrementMask * shift;
         var width = Vector<int>.Count;
         var stride = Vector<int>.Count * 2;
+        var shift = direction * stride;
         var remainder = destination.Length % stride;
 
-        var num = start;
-        var numShift = shift * width;
-        ref var pos = ref destination[0];
+        var mask = new Vector<int>(stride) * direction;
+        var value = new Vector<int>(start) + (InitMask * direction);
+        var value2 = value + (new Vector<int>(width) * direction);
+
+        ref var pos = ref MemoryMarshal.GetReference(destination);
         for (var i = 0; i < destination.Length - remainder; i += stride)
         {
-            var value = new Vector<int>(num) + mask;
-            var value2 = new Vector<int>(num += numShift) + mask;
-            num += numShift;
+            Unsafe.WriteUnaligned(ref ByteRef(ref pos), value);
+            Unsafe.WriteUnaligned(ref ByteRef(ref Unsafe.Add(ref pos, width)), value2);
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<int, byte>(
-                ref Unsafe.Add(ref pos, i)), value);
-            Unsafe.WriteUnaligned(ref Unsafe.As<int, byte>(
-                ref Unsafe.Add(ref pos, i + width)), value2);
+            value += mask;
+            value2 += mask;
+            pos = ref Unsafe.Add(ref pos, stride);
         }
 
-        var remNum = start + (destination.Length - remainder) * shift;
+        var remNum = start + ((destination.Length - remainder) * direction);
         for (var i = destination.Length - remainder; i < destination.Length; i++)
         {
-            Unsafe.Add(ref pos, i) = remNum;
-            remNum += shift;
+            pos = remNum;
+            remNum += direction;
+            pos = ref Unsafe.Add(ref pos, 1);
         }
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static ref byte ByteRef<T>(ref T source) => ref Unsafe.As<T, byte>(ref source);
 #endif
 }

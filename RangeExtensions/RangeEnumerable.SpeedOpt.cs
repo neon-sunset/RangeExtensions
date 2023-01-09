@@ -183,7 +183,6 @@ public readonly partial record struct RangeEnumerable
 
 #if NETCOREAPP3_1 || NET
         InitializeSpan(array);
-        return array;
 #else
         var enumerator = GetEnumeratorUnchecked();
         for (var i = 0; i < array.Length; i++)
@@ -191,9 +190,8 @@ public readonly partial record struct RangeEnumerable
             enumerator.MoveNext();
             array[i] = enumerator.Current;
         }
-
-        return array;
 #endif
+        return array;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
