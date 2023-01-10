@@ -149,7 +149,6 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
 
         var width = Vector<int>.Count;
         var stride = Vector<int>.Count * 2;
-        var shift = direction * stride;
         var remainder = destination.Length % stride;
 
         var mask = new Vector<int>(stride) * direction;
