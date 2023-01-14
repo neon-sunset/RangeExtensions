@@ -156,7 +156,8 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         var value2 = value + (new Vector<int>(width) * direction);
 
         ref var pos = ref MemoryMarshal.GetReference(destination);
-        for (var i = 0; i < destination.Length - remainder; i += stride)
+        ref var limit = ref Unsafe.Add(ref pos, destination.Length - remainder);
+        while (!Unsafe.AreSame(ref pos, ref limit))
         {
             Unsafe.WriteUnaligned(ref ByteRef(ref pos), value);
             Unsafe.WriteUnaligned(ref ByteRef(ref Unsafe.Add(ref pos, width)), value2);
@@ -166,12 +167,13 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
             pos = ref Unsafe.Add(ref pos, stride);
         }
 
-        var remNum = start + ((destination.Length - remainder) * direction);
-        for (var i = destination.Length - remainder; i < destination.Length; i++)
+        var num = start + ((destination.Length - remainder) * direction);
+        limit = ref Unsafe.Add(ref limit, remainder);
+        while (!Unsafe.AreSame(ref pos, ref limit))
         {
-            pos = remNum;
-            remNum += direction;
+            pos = num;
             pos = ref Unsafe.Add(ref pos, 1);
+            num += direction;
         }
     }
 
