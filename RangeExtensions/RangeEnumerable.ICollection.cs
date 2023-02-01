@@ -6,12 +6,6 @@ namespace System.Linq;
 
 public readonly partial record struct RangeEnumerable : ICollection<int>
 {
-#if NETCOREAPP3_1 || NET
-    // Up to 512bit-wide according to upcoming AVX512 support in .NET 8
-    private static readonly Vector<int> InitMask = new(
-        (ReadOnlySpan<int>)new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
-#endif
-
     public int Count
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -120,6 +114,7 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
     /// <summary>
     /// Contract: destination length must be greater than 0 and equal to .Count
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void InitializeSpan(Span<int> destination)
     {
         Debug.Assert(_start != _end);
@@ -151,8 +146,12 @@ public readonly partial record struct RangeEnumerable : ICollection<int>
         var stride = Vector<int>.Count * 2;
         var remainder = destination.Length % stride;
 
+        var initMask = Unsafe.ReadUnaligned<Vector<int>>(
+            ref Unsafe.As<int, byte>(ref MemoryMarshal.GetReference(
+                (ReadOnlySpan<int>)new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 })));
+
         var mask = new Vector<int>(stride) * direction;
-        var value = new Vector<int>(start) + (InitMask * direction);
+        var value = new Vector<int>(start) + (initMask * direction);
         var value2 = value + (new Vector<int>(width) * direction);
 
         ref var pos = ref MemoryMarshal.GetReference(destination);

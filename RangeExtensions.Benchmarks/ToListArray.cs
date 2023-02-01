@@ -3,9 +3,9 @@ using BenchmarkDotNet.Jobs;
 
 namespace RangeExtensions.Benchmarks;
 
-[ShortRunJob]
+[SimpleJob]
 [MemoryDiagnoser]
-[DisassemblyDiagnoser(maxDepth: 5, exportCombinedDisassemblyReport: true)]
+[DisassemblyDiagnoser(maxDepth: 2, exportCombinedDisassemblyReport: true)]
 public class ToListArray
 {
     [Params(10, 1000, 100000)]

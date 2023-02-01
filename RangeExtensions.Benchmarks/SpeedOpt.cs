@@ -4,19 +4,20 @@ namespace RangeExtensions.Benchmarks;
 
 [ShortRunJob]
 [MemoryDiagnoser]
+[DisassemblyDiagnoser(maxDepth: 2, exportCombinedDisassemblyReport: true)]
 public class SpeedOpt
 {
-    public const int Length = 1000;
+    public int Length = 1000;
 
     [Benchmark]
     public long RangeAggregate() => (0..Length)
         .Select(i => (long)i)
-        .Aggregate(0L, (acc, i) => acc + i);
+        .Aggregate((acc, i) => acc + i);
 
     [Benchmark]
     public long EnumerableAggregate() => Enumerable.Range(0, Length)
         .Select(i => (long)i)
-        .Aggregate(0L, (acc, i) => acc + i);
+        .Aggregate((acc, i) => acc + i);
 
     [Benchmark]
     public int RangeWhereLast() => (0..Length)
